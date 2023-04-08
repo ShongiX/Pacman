@@ -6,14 +6,21 @@
 #define PACMAN_GAME_HPP
 
 #include "GameData.hpp"
+#include "Pacman.hpp"
 
 class Game {
     GameData* gd;
 
+    Pacman pacman;
+
 public:
     Game();
     GameData* getInfo();
+
     void update();
+
+    bool checkIfCanTurn(Direction direction);
+    void turn(Direction direction);
 };
 
 

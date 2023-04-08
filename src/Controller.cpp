@@ -25,3 +25,11 @@ void Controller::getInfo() {
 void Controller::sendInfo() {
     gameMenu->setInfo(gd);
 }
+
+bool Controller::askIfCanTurn(Direction direction) {
+    return game->checkIfCanTurn(direction);
+}
+
+void Controller::turn(Direction direction) {
+    game->turn(direction);
+}

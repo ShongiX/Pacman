@@ -7,5 +7,6 @@
 
 enum State {MAIN, PLAY};
 enum Tile {PATH, WALL, DOT};
+enum Direction {LEFT, RIGHT, UP, DOWN};
 
 #endif //PACMAN_ENUMS_HPP

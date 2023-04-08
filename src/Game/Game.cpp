@@ -3,6 +3,7 @@
 //
 
 #include <fstream>
+#include <cmath>
 #include "Game.hpp"
 
 Game::Game() {
@@ -29,5 +30,28 @@ GameData *Game::getInfo() {
 }
 
 void Game::update() {
-    //TODO
+    if (pacman.getDirection() == LEFT) {
+        pacman.move(-0.1,0);
+    } else if (pacman.getDirection() == RIGHT) {
+        pacman.move(0.1,0);
+    } else if (pacman.getDirection() == UP) {
+        pacman.move(0,0.1);
+    } else if (pacman.getDirection() == DOWN) {
+        pacman.move(0,-0.1);
+    }
 }
+
+bool Game::checkIfCanTurn(Direction direction) {
+    if (direction == pacman.getDirection()) return false;
+
+    if (direction == LEFT && gd->map[(int)std::round(pacman.getX())-1][(int)std::round(pacman.getY())] == PATH) {
+        return true;
+    }
+
+    return false;
+}
+
+void Game::turn(Direction direction) {
+    pacman.setDirection(direction);
+}
+

@@ -13,18 +13,22 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+unsigned int System::SCREEN_WIDTH;
+unsigned int System::SCREEN_HEIGHT;
+unsigned int System::REFRESH;
+
 Menu *System::activeMenu{};
 std::map<State, Menu *> System::menus{};
 State System::state = MAIN;
 
-System::System(unsigned int screenWidth, unsigned int screenHeight) {
+System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh) {
     SCREEN_WIDTH = screenWidth;
     SCREEN_HEIGHT = screenHeight;
 
     initializeGlfw();
 
     buildMenu();
-    //init();
+    init();
 }
 
 void System::initializeGlfw() {
@@ -73,11 +77,22 @@ void System::init() {
 void System::run() {
     activeMenu = menus[state];
 
+    int loopCount = 0;
     while (!glfwWindowShouldClose(window)) {
         clear();
 
-        activeMenu->draw();
+        if (state == PLAY) {
+            if (++loopCount >= REFRESH && game) {
 
+                Controller::getInfo();
+                Controller::sendInfo();
+
+                game->update();
+                loopCount = 0;
+            }
+        }
+
+        activeMenu->draw();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -153,15 +168,15 @@ Menu *System::buildGameMenu() {
             trans
     );
 
-    trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(1.0/28,1.0/36,1));
+    glm::mat4 pacman = glm::mat4(1.0f);
+    pacman = glm::scale(pacman, glm::vec3(1.0/28,1.0/36,1));
 
     new TexturedRectangle(
             gameMenu,
             "../assets/pacman2.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            trans
+            pacman
             );
 
     return gameMenu;
@@ -169,10 +184,20 @@ Menu *System::buildGameMenu() {
 
 
 void System::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && System::state == MAIN) {
-        changeState(PLAY);
+    }
+
+    if (System::state == MAIN) {
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            changeState(PLAY);
+        }
+    } else if (System::state == PLAY) {
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            if (Controller::askIfCanTurn(LEFT)) {
+                Controller::turn(LEFT);
+            }
+        }
     }
 }
 
@@ -189,6 +214,8 @@ void System::framebuffer_size_callback(GLFWwindow *window, int width, int height
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+    System::SCREEN_HEIGHT = height;
+    System::SCREEN_WIDTH = width;
 }
 
 System::~System() {

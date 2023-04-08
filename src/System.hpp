@@ -20,8 +20,10 @@ class Controller;
 class System {
     Game* game{};
 
-    unsigned int SCREEN_WIDTH;
-    unsigned int SCREEN_HEIGHT;
+    static unsigned int SCREEN_WIDTH;
+    static unsigned int SCREEN_HEIGHT;
+    static unsigned int REFRESH;
+
     GLFWwindow *window{};
 
     static Menu* activeMenu;
@@ -36,7 +38,7 @@ class System {
     Menu* buildGameMenu();
 
 public:
-    System(unsigned int screenWidth, unsigned int screenHeight);
+    System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh);
     ~System();
 
     void init();

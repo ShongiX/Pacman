@@ -23,6 +23,9 @@ public:
 
     static void getInfo();
     static void sendInfo();
+
+    static bool askIfCanTurn(Direction direction);
+    static void turn(Direction direction);
 };
 
 #endif //PACMAN_CONTROLLER_HPP
