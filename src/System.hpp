@@ -33,9 +33,6 @@ class System {
 
     void buildMenu();
     Menu* buildMainMenu();
-    Menu* buildRulesMenu();
-    Menu* buildInfoMenu();
-    Menu* buildCreditMenu();
     Menu* buildGameMenu();
 
 public:

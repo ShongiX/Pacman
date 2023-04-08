@@ -26,6 +26,9 @@ private:
     void setupTransform();
 
 public:
+    static std::vector<GLfloat> defaultVertices;
+    static std::vector<GLuint> defaultIndices;
+
     TexturedRectangle(Menu *m, const char *fileName, const std::vector<GLfloat> &_vertices,
                       const std::vector<GLuint> &_indices, glm::mat4 _trans);
 

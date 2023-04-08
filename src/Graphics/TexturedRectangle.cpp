@@ -12,6 +12,18 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "Menu.hpp"
 
+std::vector<GLfloat> TexturedRectangle::defaultVertices = {
+        // positions          // colors           // texture coords
+        1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+        1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
+        -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
+};
+std::vector<GLuint> TexturedRectangle::defaultIndices = {
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+};
+
 TexturedRectangle::TexturedRectangle(Menu* m, const char* fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans) {
     this->m = m;
     m->addWidget(this);

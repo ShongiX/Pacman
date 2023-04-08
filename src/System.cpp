@@ -13,8 +13,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-Menu* System::activeMenu{};
-std::map<State, Menu*> System::menus{};
+Menu *System::activeMenu{};
+std::map<State, Menu *> System::menus{};
 State System::state = MAIN;
 
 System::System(unsigned int screenWidth, unsigned int screenHeight) {
@@ -64,7 +64,7 @@ void System::clear(float r, float g, float b) {
 
 void System::init() {
     game = new Game();
-    Controller::init(game,gameMenu);
+    Controller::init(game, gameMenu);
     Controller::getInfo();
     Controller::sendInfo();
     if (gameMenu) gameMenu->build();
@@ -96,10 +96,7 @@ void System::buildMenu() {
 Menu *System::buildMainMenu() {
     Menu *menu = new Menu();
 
-    //map
-    /*glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(1, 31.0/36.0, 1));
-    trans = glm::translate(trans, glm::vec3(0, -0.5/36, 0));*/
+
 
     //Title screen
     glm::mat4 trans = glm::mat4(1.0f);
@@ -124,44 +121,49 @@ Menu *System::buildMainMenu() {
             trans
     );
 
+    //Start text
     trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.8, 0.1, 1));
-    trans = glm::translate(trans, glm::vec3(0,-8.0,0));
+    trans = glm::translate(trans, glm::vec3(0, -8.0, 0));
 
     new TexturedRectangle(
             menu,
             "../assets/pacman_starttext.png",
-            {
-                    // positions          // colors           // texture coords
-                    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-                    1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
-                    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
-                    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
-            },
-            {
-                    0, 1, 3,   // first triangle
-                    1, 2, 3    // second triangle
-            },
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
             trans
     );
 
     return menu;
 }
 
-Menu *System::buildRulesMenu() {
-    return nullptr;
-}
-
-Menu *System::buildInfoMenu() {
-    return nullptr;
-}
-
-Menu *System::buildCreditMenu() {
-    return nullptr;
-}
-
 Menu *System::buildGameMenu() {
     gameMenu = new GameMenu();
+
+    //map
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(1, 31.0 / 36.0, 1));
+    trans = glm::translate(trans, glm::vec3(0, -0.5 / 36, 0));
+
+    new TexturedRectangle(
+            gameMenu,
+            "../assets/map.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            trans
+    );
+
+    trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(1.0/28,1.0/36,1));
+
+    new TexturedRectangle(
+            gameMenu,
+            "../assets/pacman2.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            trans
+            );
+
     return gameMenu;
 }
 
