@@ -13,6 +13,10 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+Menu* System::activeMenu{};
+std::map<State, Menu*> System::menus{};
+State System::state = MAIN;
+
 System::System(unsigned int screenWidth, unsigned int screenHeight) {
     SCREEN_WIDTH = screenWidth;
     SCREEN_HEIGHT = screenHeight;
@@ -31,7 +35,7 @@ void System::initializeGlfw() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // glfw window creation
-    window = glfwCreateWindow((int) SCREEN_WIDTH, (int) SCREEN_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    window = glfwCreateWindow((int) SCREEN_WIDTH, (int) SCREEN_HEIGHT, "Pac-Man", nullptr, nullptr);
     glfwMakeContextCurrent(window);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -86,16 +90,11 @@ void System::changeState(State newState) {
 
 void System::buildMenu() {
     menus[State::MAIN] = buildMainMenu();
-    menus[State::RULES] = buildRulesMenu();
-    menus[State::INFO] = buildInfoMenu();
-    menus[State::CREDITS] = buildCreditMenu();
     menus[State::PLAY] = buildGameMenu();
 }
 
 Menu *System::buildMainMenu() {
     Menu *menu = new Menu();
-
-
 
     //map
     /*glm::mat4 trans = glm::mat4(1.0f);
@@ -104,8 +103,10 @@ Menu *System::buildMainMenu() {
 
     //Title screen
     glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(1,0.5,1));
-    trans = glm::translate(trans, glm::vec3(0,0.75,1));
+    //trans = glm::scale(trans, glm::vec3(1,0.5,1));
+    //trans = glm::translate(trans, glm::vec3(0,0.75,1));
+    //trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+
     new TexturedRectangle(
             menu,
             "../assets/pacman_titlescreen.png",
@@ -123,12 +124,26 @@ Menu *System::buildMainMenu() {
             trans
     );
 
+    trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.8, 0.1, 1));
+    trans = glm::translate(trans, glm::vec3(0,-8.0,0));
 
-    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*0.0,BUTTON_WIDTH,BUTTON_HEIGHT,"Start",[this](){init(); changeState(State::PLAY);});
-    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*1.2,BUTTON_WIDTH,BUTTON_HEIGHT,"How to play?",[this](){changeState(State::RULES);});
-    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*2.4,BUTTON_WIDTH,BUTTON_HEIGHT,"Info",[this](){changeState(State::INFO);});
-    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*3.6,BUTTON_WIDTH,BUTTON_HEIGHT,"Credits",[this](){changeState(State::CREDITS);});
-    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*4.8,BUTTON_WIDTH,BUTTON_HEIGHT,"Exit",[](){exit(0);});
+    new TexturedRectangle(
+            menu,
+            "../assets/pacman_starttext.png",
+            {
+                    // positions          // colors           // texture coords
+                    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+                    1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+                    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
+                    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
+            },
+            {
+                    0, 1, 3,   // first triangle
+                    1, 2, 3    // second triangle
+            },
+            trans
+    );
 
     return menu;
 }
@@ -154,6 +169,9 @@ Menu *System::buildGameMenu() {
 void System::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && System::state == MAIN) {
+        changeState(PLAY);
+    }
 }
 
 void System::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {

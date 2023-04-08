@@ -24,12 +24,12 @@ class System {
     unsigned int SCREEN_HEIGHT;
     GLFWwindow *window{};
 
-    Menu* activeMenu{};
+    static Menu* activeMenu;
     GameMenu* gameMenu{};
-    std::map<State, Menu*> menus;
-    State state = MAIN;
+    static std::map<State, Menu*> menus;
+    static State state;
 
-    void changeState(State newState);
+    static void changeState(State newState);
 
     void buildMenu();
     Menu* buildMainMenu();

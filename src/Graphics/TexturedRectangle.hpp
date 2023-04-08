@@ -11,23 +11,24 @@
 #include "shader.h"
 #include "Widget.hpp"
 
-class TexturedRectangle : Widget {
+class TexturedRectangle : public Widget {
 private:
     unsigned int VAO{}, VBO{}, EBO{}, texture{};
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
-    Shader* shader{};
+    Shader *shader{};
     glm::mat4 trans = glm::mat4(1.0f);
 
-    void setupTexture(const char* fileName);
+    void setupTexture(const char *fileName);
     void setupBuffers();
     void setupShader();
 
     void setupTransform();
 
-
 public:
-    TexturedRectangle(Menu* m, const char* fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans);
+    TexturedRectangle(Menu *m, const char *fileName, const std::vector<GLfloat> &_vertices,
+                      const std::vector<GLuint> &_indices, glm::mat4 _trans);
+
     void draw() override;
 };
 
