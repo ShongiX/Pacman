@@ -24,5 +24,5 @@ add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE include/glm)
 
 # Add executable and link libraries
-add_executable(pacman src/main.cpp src/stb_image.cpp src/System.cpp src/System.hpp src/TexturedRectangle.cpp src/TexturedRectangle.hpp)
+add_executable(pacman src/main.cpp src/Graphics/stb_image.cpp src/System.cpp src/System.hpp src/Graphics/TexturedRectangle.cpp src/Graphics/TexturedRectangle.hpp src/Game/Game.cpp src/Game/Game.hpp src/Game/GameData.hpp src/Enums.hpp src/Graphics/Widget.cpp src/Graphics/Widget.hpp src/Graphics/Menu.cpp src/Graphics/Menu.hpp src/Controller.cpp src/Controller.hpp src/Graphics/Button.cpp src/Graphics/Button.hpp)
 target_link_libraries(pacman glad glfw glm ${CMAKE_DL_LIBS} gdi32 user32 kernel32 libglfw3.a)

@@ -7,32 +7,54 @@
 
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
-#include "shader.h"
-#include "TexturedRectangle.hpp"
+#include "Graphics/shader.h"
+#include "Graphics/TexturedRectangle.hpp"
+#include "Enums.hpp"
+#include <map>
+
+class Game;
+class Menu;
+class GameMenu;
+class Controller;
 
 class System {
+    Game* game{};
+
     unsigned int SCREEN_WIDTH;
     unsigned int SCREEN_HEIGHT;
     GLFWwindow *window{};
+
+    Menu* activeMenu{};
+    GameMenu* gameMenu{};
+    std::map<State, Menu*> menus;
+    State state = MAIN;
+
+    void changeState(State newState);
+
+    void buildMenu();
+    Menu* buildMainMenu();
+    Menu* buildRulesMenu();
+    Menu* buildInfoMenu();
+    Menu* buildCreditMenu();
+    Menu* buildGameMenu();
 
 public:
     System(unsigned int screenWidth, unsigned int screenHeight);
     ~System();
 
-    GLFWwindow *getWindow() const;
-
+    void init();
     void run();
-    void clear(float r = 0.0, float g = 0.0, float b = 0.0);
-    void draw();
+
+
+
+
+    static void clear(float r = 0.0, float g = 0.0, float b = 0.0);
 
     static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
     static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
     static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
     void initializeGlfw();
-
-    //TEMPORARY
-    TexturedRectangle* rec{};
 };
 
 

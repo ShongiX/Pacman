@@ -3739,7 +3739,7 @@ static void stbi__YCbCr_to_RGB_simd(stbi_uc* out, stbi_uc const* y, stbi_uc cons
             int16x8_t crw = vshll_n_s8(cr_biased, 7);
             int16x8_t cbw = vshll_n_s8(cb_biased, 7);
 
-            // color transform
+            // color setupTransform
             int16x8_t cr0 = vqdmulhq_s16(crw, cr_const0);
             int16x8_t cb0 = vqdmulhq_s16(cbw, cb_const0);
             int16x8_t cr1 = vqdmulhq_s16(crw, cr_const1);

@@ -4,7 +4,14 @@
 
 #include <iostream>
 #include "System.hpp"
-#include "stb_image.h"
+#include "Graphics/stb_image.h"
+#include "Game/Game.hpp"
+#include "Graphics/Menu.hpp"
+#include "Controller.hpp"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 System::System(unsigned int screenWidth, unsigned int screenHeight) {
     SCREEN_WIDTH = screenWidth;
@@ -12,20 +19,8 @@ System::System(unsigned int screenWidth, unsigned int screenHeight) {
 
     initializeGlfw();
 
-    rec = new TexturedRectangle(
-            "../assets/map.png",
-            {
-                    // positions          // colors           // texture coords
-                    0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-                    0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-                    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-                    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
-            },
-            {
-                    0, 1, 3,   // first triangle
-                    1, 2, 3    // second triangle
-            }
-            );
+    buildMenu();
+    //init();
 }
 
 void System::initializeGlfw() {
@@ -58,24 +53,101 @@ void System::initializeGlfw() {
     stbi_set_flip_vertically_on_load(true);
 }
 
-void System::clear(float r, float g, float b ) {
+void System::clear(float r, float g, float b) {
     glClearColor(r, g, b, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void System::init() {
+    game = new Game();
+    Controller::init(game,gameMenu);
+    Controller::getInfo();
+    Controller::sendInfo();
+    if (gameMenu) gameMenu->build();
+}
+
 void System::run() {
+    activeMenu = menus[state];
+
     while (!glfwWindowShouldClose(window)) {
         clear();
 
-        draw();
+        activeMenu->draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }
 
-void System::draw() {
-    rec->draw();
+void System::changeState(State newState) {
+    state = newState;
+    activeMenu = menus[newState];
+}
+
+void System::buildMenu() {
+    menus[State::MAIN] = buildMainMenu();
+    menus[State::RULES] = buildRulesMenu();
+    menus[State::INFO] = buildInfoMenu();
+    menus[State::CREDITS] = buildCreditMenu();
+    menus[State::PLAY] = buildGameMenu();
+}
+
+Menu *System::buildMainMenu() {
+    Menu *menu = new Menu();
+
+
+
+    //map
+    /*glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(1, 31.0/36.0, 1));
+    trans = glm::translate(trans, glm::vec3(0, -0.5/36, 0));*/
+
+    //Title screen
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(1,0.5,1));
+    trans = glm::translate(trans, glm::vec3(0,0.75,1));
+    new TexturedRectangle(
+            menu,
+            "../assets/pacman_titlescreen.png",
+            {
+                    // positions          // colors           // texture coords
+                    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+                    1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+                    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
+                    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
+            },
+            {
+                    0, 1, 3,   // first triangle
+                    1, 2, 3    // second triangle
+            },
+            trans
+    );
+
+
+    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*0.0,BUTTON_WIDTH,BUTTON_HEIGHT,"Start",[this](){init(); changeState(State::PLAY);});
+    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*1.2,BUTTON_WIDTH,BUTTON_HEIGHT,"How to play?",[this](){changeState(State::RULES);});
+    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*2.4,BUTTON_WIDTH,BUTTON_HEIGHT,"Info",[this](){changeState(State::INFO);});
+    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*3.6,BUTTON_WIDTH,BUTTON_HEIGHT,"Credits",[this](){changeState(State::CREDITS);});
+    //new Button(menu,_XX/2-BUTTON_WIDTH/2,_YY/4+BUTTON_HEIGHT*4.8,BUTTON_WIDTH,BUTTON_HEIGHT,"Exit",[](){exit(0);});
+
+    return menu;
+}
+
+Menu *System::buildRulesMenu() {
+    return nullptr;
+}
+
+Menu *System::buildInfoMenu() {
+    return nullptr;
+}
+
+Menu *System::buildCreditMenu() {
+    return nullptr;
+}
+
+Menu *System::buildGameMenu() {
+    gameMenu = new GameMenu();
+    return gameMenu;
 }
 
 
@@ -99,11 +171,6 @@ void System::framebuffer_size_callback(GLFWwindow *window, int width, int height
     glViewport(0, 0, width, height);
 }
 
-GLFWwindow *System::getWindow() const {
-    return window;
-}
-
 System::~System() {
-    delete rec;
     glfwTerminate();
 }

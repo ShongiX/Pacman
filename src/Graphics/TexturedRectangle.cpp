@@ -6,17 +6,23 @@
 #include "TexturedRectangle.hpp"
 #include "stb_image.h"
 #include "iostream"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "Menu.hpp"
 
+TexturedRectangle::TexturedRectangle(Menu* m, const char* fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans) {
+    this->m = m;
+    m->addWidget(this);
+    this->vertices = _vertices;
+    this->indices = _indices;
+    this->trans = _trans;
 
-TexturedRectangle::TexturedRectangle(const char* fileName, const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices) {
     setupTexture(fileName);
-    setupBuffers(vertices,indices);
+    setupBuffers();
     setupShader();
-
-    transform();
+    setupTransform();
 }
 
 void TexturedRectangle::setupTexture(const char* fileName) {
@@ -40,10 +46,7 @@ void TexturedRectangle::setupTexture(const char* fileName) {
     stbi_image_free(data);
 }
 
-void TexturedRectangle::setupBuffers(const std::vector<GLfloat> &_vertices, const std::vector<GLuint> &_indices) {
-    this->vertices = _vertices;
-    this->indices = _indices;
-
+void TexturedRectangle::setupBuffers() {
     glGenBuffers(1, &EBO);
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
@@ -75,20 +78,18 @@ void TexturedRectangle::setupShader() {
     shader = new Shader("../shaders/vertexShader.vert", "../shaders/fragmentShader.frag");
 }
 
+void TexturedRectangle::setupTransform() {
+    unsigned int transformLoc = glGetUniformLocation(shader->ID, "setupTransform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+}
+
 void TexturedRectangle::draw() {
     shader->use();
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
+    shader->setMat4("transform",trans);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-}
-
-void TexturedRectangle::transform() {
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(2, 2, 2));
-
-    unsigned int transformLoc = glGetUniformLocation(shader->ID, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 }
 
 

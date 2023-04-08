@@ -9,24 +9,26 @@
 #include <vector>
 #include "glad/glad.h"
 #include "shader.h"
+#include "Widget.hpp"
 
-class TexturedRectangle {
+class TexturedRectangle : Widget {
 private:
     unsigned int VAO{}, VBO{}, EBO{}, texture{};
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
     Shader* shader{};
+    glm::mat4 trans = glm::mat4(1.0f);
 
     void setupTexture(const char* fileName);
-    void setupBuffers(const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices);
+    void setupBuffers();
     void setupShader();
 
-    void transform();
+    void setupTransform();
 
 
 public:
-    TexturedRectangle(const char* fileName, const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices);
-    void draw();
+    TexturedRectangle(Menu* m, const char* fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans);
+    void draw() override;
 };
 
 
