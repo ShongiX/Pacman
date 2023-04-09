@@ -26,6 +26,9 @@ public:
 
     static bool askIfCanTurn(Direction direction);
     static void turn(Direction direction);
+
+    //TEMPORARY
+    friend Game;
 };
 
 #endif //PACMAN_CONTROLLER_HPP

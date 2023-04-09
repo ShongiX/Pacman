@@ -8,10 +8,8 @@
 #include "Game/Game.hpp"
 #include "Graphics/Menu.hpp"
 #include "Controller.hpp"
-
-#include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+
 
 unsigned int System::SCREEN_WIDTH;
 unsigned int System::SCREEN_HEIGHT;
@@ -20,6 +18,10 @@ unsigned int System::REFRESH;
 Menu *System::activeMenu{};
 std::map<State, Menu *> System::menus{};
 State System::state = MAIN;
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh) {
     SCREEN_WIDTH = screenWidth;
@@ -71,7 +73,6 @@ void System::init() {
     Controller::init(game, gameMenu);
     Controller::getInfo();
     Controller::sendInfo();
-    if (gameMenu) gameMenu->build();
 }
 
 void System::run() {
@@ -156,52 +157,47 @@ Menu *System::buildGameMenu() {
     gameMenu = new GameMenu();
 
     //map
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(1, 31.0 / 36.0, 1));
-    trans = glm::translate(trans, glm::vec3(0, -0.5 / 36, 0));
+    glm::mat4 map = glm::mat4(1.0f);
+    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
+    map = glm::translate(map, glm::vec3(0, -0.5 / 36, 0));
 
     new TexturedRectangle(
             gameMenu,
             "../assets/map.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            trans
+            map
     );
 
-    glm::mat4 pacman = glm::mat4(1.0f);
-    pacman = glm::scale(pacman, glm::vec3(1.0/28,1.0/36,1));
 
+    gameMenu->pacman = glm::scale(gameMenu->pacman, glm::vec3(1.0/28,1.0/36,1));
     new TexturedRectangle(
             gameMenu,
             "../assets/pacman2.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            pacman
+            gameMenu->pacman
             );
 
     return gameMenu;
 }
 
 
-void System::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
-    if (System::state == MAIN) {
+    if (System::getState() == MAIN) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            changeState(PLAY);
+            System::changeState(PLAY);
         }
-    } else if (System::state == PLAY) {
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            if (Controller::askIfCanTurn(LEFT)) {
-                Controller::turn(LEFT);
-            }
-        }
+    } else if (System::getState() == PLAY) {
+        System::handle(window,key,scancode,action,mods);
     }
 }
 
-void System::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double xpos, ypos;
         //getting cursor position
@@ -210,14 +206,38 @@ void System::mouse_button_callback(GLFWwindow *window, int button, int action, i
     }
 }
 
-void System::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
-    System::SCREEN_HEIGHT = height;
-    System::SCREEN_WIDTH = width;
+    System::setScreenHeight(height);
+    System::setScreenWidth(width);
 }
 
 System::~System() {
     glfwTerminate();
+}
+
+unsigned int System::getScreenWidth() {
+    return SCREEN_WIDTH;
+}
+
+unsigned int System::getScreenHeight() {
+    return SCREEN_HEIGHT;
+}
+
+void System::setScreenWidth(unsigned int screenWidth) {
+    SCREEN_WIDTH = screenWidth;
+}
+
+void System::setScreenHeight(unsigned int screenHeight) {
+    SCREEN_HEIGHT = screenHeight;
+}
+
+State System::getState() {
+    return state;
+}
+
+void System::handle(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    activeMenu->handle(window,key,scancode,action,mods);
 }
