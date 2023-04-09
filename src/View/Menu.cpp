@@ -58,8 +58,12 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
 }
 
 void GameMenu::update() {
+    updatePacman();
+    checkState();
+}
+
+void GameMenu::updatePacman() {
     pacman_trans = glm::mat4(1.0f);
-    //pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman.getX() - 14.0f) / 14.0f, (18.0f - gd->pacman.getY()) / 18.0f,0.0f));
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
@@ -73,8 +77,30 @@ void GameMenu::update() {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(270.0f), glm::vec3(0.0, 0.0, 1.0));
     }
 
-    //std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
     pacman->setTrans(pacman_trans);
+}
+
+void GameMenu::checkState() {
+    if (gd->gameWon) {
+        System::changeState(WIN);
+
+        //Win text
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
+
+        new TexturedRectangle(
+                this,
+                "../assets/win_text.png",
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                trans
+        );
+    }
+    if (gd->gameOver) {
+        System::changeState(DEAD);
+
+
+    }
 }
 
 void GameMenu::build() {

@@ -40,6 +40,9 @@ public:
     void build();
     void update();
 
+    void updatePacman();
+    void checkState();
+
     //Translation matrices
     glm::mat4 map = glm::mat4(1.0f);
     glm::mat4 pacman_trans = glm::mat4(1.0f);

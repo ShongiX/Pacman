@@ -15,13 +15,17 @@ unsigned int System::SCREEN_WIDTH;
 unsigned int System::SCREEN_HEIGHT;
 unsigned int System::REFRESH;
 
+Game *System::game{};
 Menu *System::activeMenu{};
 std::map<State, Menu *> System::menus{};
+GameMenu *System::gameMenu{};
 State System::state = MAIN;
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
+static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
 System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh) {
     SCREEN_WIDTH = screenWidth;
@@ -31,7 +35,7 @@ System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int
     initializeGlfw();
 
     buildMenu();
-    init();
+    //init();
 }
 
 void System::initializeGlfw() {
@@ -69,6 +73,7 @@ void System::clear(float r, float g, float b) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+//initiliaze a new game
 void System::init() {
     game = new Game();
     Controller::init(game, gameMenu);
@@ -80,22 +85,16 @@ void System::init() {
 void System::run() {
     activeMenu = menus[state];
 
-    int loopCount = 0;
     while (!glfwWindowShouldClose(window)) {
         clear();
 
         if (state == PLAY) {
-            if (++loopCount >= REFRESH && game) {
 
                 Controller::getInfo();
                 Controller::sendInfo();
 
                 game->update();
-                loopCount = 0;
-
-                //gameMenu->build();
                 gameMenu->update();
-            }
         }
 
         activeMenu->draw();
@@ -112,12 +111,12 @@ void System::changeState(State newState) {
 void System::buildMenu() {
     menus[State::MAIN] = buildMainMenu();
     menus[State::PLAY] = buildGameMenu();
+    menus[State::WIN] = menus[State::PLAY];
+    menus[State::DEAD] = menus[State::PLAY];
 }
 
 Menu *System::buildMainMenu() {
     Menu *menu = new Menu();
-
-
 
     //Title screen
     glm::mat4 trans = glm::mat4(1.0f);
@@ -128,17 +127,8 @@ Menu *System::buildMainMenu() {
     new TexturedRectangle(
             menu,
             "../assets/pacman_titlescreen.png",
-            {
-                    // positions          // colors           // texture coords
-                    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-                    1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
-                    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
-                    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
-            },
-            {
-                    0, 1, 3,   // first triangle
-                    1, 2, 3    // second triangle
-            },
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
             trans
     );
 
@@ -184,11 +174,10 @@ Menu *System::buildGameMenu() {
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             gameMenu->pacman_trans
-            );
+    );
 
     return gameMenu;
 }
-
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -198,9 +187,14 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     if (System::getState() == MAIN) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
             System::changeState(PLAY);
+            System::init();
         }
     } else if (System::getState() == PLAY) {
-        System::handle(window,key,scancode,action,mods);
+        System::handle(window, key, scancode, action, mods);
+    } else if (System::getState() == WIN || System::getState() == DEAD) {
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            System::changeState(MAIN);
+        }
     }
 }
 
@@ -246,5 +240,5 @@ State System::getState() {
 }
 
 void System::handle(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    activeMenu->handle(window,key,scancode,action,mods);
+    activeMenu->handle(window, key, scancode, action, mods);
 }

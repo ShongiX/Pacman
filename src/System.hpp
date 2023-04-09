@@ -16,7 +16,7 @@ class GameMenu;
 class Controller;
 
 class System {
-    Game* game{};
+    static Game* game;
 
     static unsigned int SCREEN_WIDTH;
     static unsigned int SCREEN_HEIGHT;
@@ -25,7 +25,7 @@ class System {
     GLFWwindow *window{};
 
     static Menu* activeMenu;
-    GameMenu* gameMenu{};
+    static GameMenu* gameMenu;
     static std::map<State, Menu*> menus;
     static State state;
 
@@ -37,7 +37,7 @@ public:
     System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh);
     ~System();
 
-    void init();
+    static void init();
     void run();
 
     static unsigned int getScreenWidth();

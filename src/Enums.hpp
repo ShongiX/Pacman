@@ -5,7 +5,7 @@
 #ifndef PACMAN_ENUMS_HPP
 #define PACMAN_ENUMS_HPP
 
-enum State {MAIN, PLAY, WIN};
+enum State {MAIN, PLAY, WIN, DEAD};
 enum Tile {PATH, WALL, DOT};
 enum Direction {LEFT, RIGHT, UP, DOWN};
 

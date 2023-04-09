@@ -22,7 +22,7 @@ private:
     bool gameOver = false;
     bool gameWon = false;
     int score = 0;
-    int numberOfDots = 244;
+    int numberOfDots = 246;
 
     Pacman pacman;
 

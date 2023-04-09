@@ -40,7 +40,7 @@ GameData *Game::getInfo() {
 }
 
 void Game::update() {
-    std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
+    //std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
 
     move();
     eat();
