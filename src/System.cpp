@@ -4,9 +4,9 @@
 
 #include <iostream>
 #include "System.hpp"
-#include "Graphics/stb_image.h"
-#include "Game/Game.hpp"
-#include "Graphics/Menu.hpp"
+#include "View/stb_image.h"
+#include "Model/Game.hpp"
+#include "View/Menu.hpp"
 #include "Controller.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -74,6 +74,7 @@ void System::init() {
     Controller::init(game, gameMenu);
     Controller::getInfo();
     Controller::sendInfo();
+    gameMenu->build();
 }
 
 void System::run() {
@@ -92,6 +93,7 @@ void System::run() {
                 game->update();
                 loopCount = 0;
 
+                //gameMenu->build();
                 gameMenu->update();
             }
         }
@@ -158,24 +160,23 @@ Menu *System::buildMainMenu() {
 
 Menu *System::buildGameMenu() {
     gameMenu = new GameMenu();
+    if (!gameMenu) exit(2);
 
     //map
-    glm::mat4 map = glm::mat4(1.0f);
-    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
-    map = glm::translate(map, glm::vec3(0, -0.5 / 36, 0));
-
-    new TexturedRectangle(
-            gameMenu,
-            "../assets/map.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            map
-    );
-
+//    glm::mat4 map = glm::mat4(1.0f);
+//    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
+//    map = glm::translate(map, glm::vec3(0, -0.5 / 36, 0));
+//
+//    new TexturedRectangle(
+//            gameMenu,
+//            "../assets/map.png",
+//            TexturedRectangle::defaultVertices,
+//            TexturedRectangle::defaultIndices,
+//            map
+//    );
 
     //pacman_trans
     gameMenu->pacman_trans = glm::scale(gameMenu->pacman_trans, glm::vec3(1.0 / 28, 1.0 / 36, 1));
-    gameMenu->pacman_trans = glm::translate(gameMenu->pacman_trans, glm::vec3(1, 0, 0));
 
     gameMenu->pacman = new TexturedRectangle(
             gameMenu,

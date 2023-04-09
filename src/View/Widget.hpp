@@ -18,6 +18,7 @@ public:
 
     explicit Widget(Menu *m);
     Widget() = default;;
+    virtual ~Widget() = default;
 };
 
 

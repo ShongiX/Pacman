@@ -3,8 +3,8 @@
 //
 
 #include "Controller.hpp"
-#include "Game/Game.hpp"
-#include "Graphics/Menu.hpp"
+#include "Model/Game.hpp"
+#include "View/Menu.hpp"
 
 Game* Controller::game{};
 GameMenu* Controller::gameMenu{};

@@ -23,6 +23,7 @@ public:
     virtual void handle(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     void addWidget(Widget *w);
+    void removeWidget(Widget* w);
 };
 
 
@@ -34,6 +35,8 @@ public:
 
     void setInfo(GameData* _gd);
     void handle(GLFWwindow *window, int key, int scancode, int action, int mods) override;
+
+    void build();
     void update();
 
     //Translation matrices
@@ -41,6 +44,8 @@ public:
     glm::mat4 pacman_trans = glm::mat4(1.0f);
 
     TexturedRectangle* pacman;
+
+
 };
 
 

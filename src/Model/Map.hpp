@@ -5,7 +5,7 @@
 #ifndef PACMAN_MAP_HPP
 #define PACMAN_MAP_HPP
 
-#include "../Graphics/Widget.hpp"
+#include "../View/Widget.hpp"
 
 class Map : public Widget {
 public:

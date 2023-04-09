@@ -18,8 +18,11 @@ public:
 
     bool checkIfCanTurn(Direction direction);
     void turn(Direction direction);
-
     bool checkIfCanMove();
+    void move();
+    void eat();
+
+    bool checkIfWon();
 };
 
 

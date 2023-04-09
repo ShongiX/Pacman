@@ -91,7 +91,7 @@ void TexturedRectangle::setupShader() {
 }
 
 void TexturedRectangle::setupTransform() {
-    unsigned int transformLoc = glGetUniformLocation(shader->ID, "setupTransform");
+    unsigned int transformLoc = glGetUniformLocation(shader->ID, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 }
 

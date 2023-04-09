@@ -6,7 +6,7 @@
 #define PACMAN_SYSTEM_HPP
 
 #include "glad/glad.h"
-#include "Graphics/TexturedRectangle.hpp"
+#include "View/TexturedRectangle.hpp"
 #include "Enums.hpp"
 #include <map>
 

@@ -20,7 +20,9 @@ private:
     Tile map[MAP_WIDTH][MAP_HEIGHT]{};
 
     bool gameOver = false;
+    bool gameWon = false;
     int score = 0;
+    int numberOfDots = 244;
 
     Pacman pacman;
 
