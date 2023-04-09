@@ -30,6 +30,8 @@ Game::Game() {
                 gd->map[j][i] = WALL;
             } else if (x == DOT) {
                 gd->map[j][i] = DOT;
+            } else if (x == GHOST_ONLY) {
+                gd->map[j][i] = GHOST_ONLY;
             }
         }
     }
@@ -110,8 +112,10 @@ void Game::move() {
 
     if (gd->pacman.getDirection() == LEFT) {
         gd->pacman.move(-0.1, 0);
+        if (gd->pacman.getX() < -0.5) gd->pacman.setX(28);
     } else if (gd->pacman.getDirection() == RIGHT) {
         gd->pacman.move(0.1, 0);
+        if (gd->pacman.getX() > 28.5) gd->pacman.setX(0);
     } else if (gd->pacman.getDirection() == UP) {
         gd->pacman.move(0, -0.1);
     } else if (gd->pacman.getDirection() == DOWN) {

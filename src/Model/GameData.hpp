@@ -7,6 +7,7 @@
 
 #include "../Enums.hpp"
 #include "Pacman.hpp"
+#include "Blinky.hpp"
 
 class Game;
 class GameMenu;
@@ -17,7 +18,7 @@ public:
     static const int MAP_HEIGHT = 36;
 
 private:
-    Tile map[MAP_WIDTH][MAP_HEIGHT]{};
+    Tile map[MAP_WIDTH][MAP_HEIGHT];
 
     bool gameOver = false;
     bool gameWon = false;
@@ -25,6 +26,7 @@ private:
     int numberOfDots = 246;
 
     Pacman pacman;
+    Blinky blinky;
 
     friend Game;
     friend GameMenu;

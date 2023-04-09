@@ -99,7 +99,17 @@ void GameMenu::checkState() {
     if (gd->gameOver) {
         System::changeState(DEAD);
 
+        //Dead text
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
 
+        new TexturedRectangle(
+                this,
+                "../assets/dead_text.png",
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                trans
+        );
     }
 }
 
