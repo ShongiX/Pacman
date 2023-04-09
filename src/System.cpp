@@ -26,6 +26,7 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh) {
     SCREEN_WIDTH = screenWidth;
     SCREEN_HEIGHT = screenHeight;
+    REFRESH = refresh;
 
     initializeGlfw();
 
@@ -90,6 +91,8 @@ void System::run() {
 
                 game->update();
                 loopCount = 0;
+
+                gameMenu->update();
             }
         }
 
@@ -170,13 +173,16 @@ Menu *System::buildGameMenu() {
     );
 
 
-    gameMenu->pacman = glm::scale(gameMenu->pacman, glm::vec3(1.0/28,1.0/36,1));
-    new TexturedRectangle(
+    //pacman_trans
+    gameMenu->pacman_trans = glm::scale(gameMenu->pacman_trans, glm::vec3(1.0 / 28, 1.0 / 36, 1));
+    gameMenu->pacman_trans = glm::translate(gameMenu->pacman_trans, glm::vec3(1, 0, 0));
+
+    gameMenu->pacman = new TexturedRectangle(
             gameMenu,
-            "../assets/pacman2.png",
+            "../assets/pacman_right.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            gameMenu->pacman
+            gameMenu->pacman_trans
             );
 
     return gameMenu;

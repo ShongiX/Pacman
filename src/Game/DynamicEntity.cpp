@@ -6,8 +6,8 @@
 
 
 void DynamicEntity::move(float x, float y) {
-    this->x = x;
-    this->y = y;
+    this->x += x;
+    this->y += y;
 }
 
 Direction DynamicEntity::getDirection() const {

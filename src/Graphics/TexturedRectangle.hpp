@@ -33,6 +33,7 @@ public:
                       const std::vector<GLuint> &_indices, glm::mat4 _trans);
 
     void draw() override;
+    void setTrans(const glm::mat4 &trans);
 };
 
 

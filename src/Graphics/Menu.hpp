@@ -12,6 +12,7 @@
 
 class GameData;
 class System;
+class TexturedRectangle;
 
 class Menu {
 protected:
@@ -24,19 +25,22 @@ public:
     void addWidget(Widget *w);
 };
 
+
 class GameMenu : public Menu {
     GameData* gd{};
 
-    //Translation matrices
-    glm::mat4 map = glm::mat4(1.0f);
-
-
-
 public:
+    GameMenu();
+
     void setInfo(GameData* _gd);
     void handle(GLFWwindow *window, int key, int scancode, int action, int mods) override;
+    void update();
 
-    glm::mat4 pacman = glm::mat4(1.0f);;
+    //Translation matrices
+    glm::mat4 map = glm::mat4(1.0f);
+    glm::mat4 pacman_trans = glm::mat4(1.0f);
+
+    TexturedRectangle* pacman;
 };
 
 

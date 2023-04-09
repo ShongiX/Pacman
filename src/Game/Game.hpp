@@ -6,12 +6,9 @@
 #define PACMAN_GAME_HPP
 
 #include "GameData.hpp"
-#include "Pacman.hpp"
 
 class Game {
     GameData* gd;
-
-    Pacman pacman;
 
 public:
     Game();
@@ -21,6 +18,8 @@ public:
 
     bool checkIfCanTurn(Direction direction);
     void turn(Direction direction);
+
+    bool checkIfCanMove();
 };
 
 

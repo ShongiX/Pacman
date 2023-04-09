@@ -104,4 +104,8 @@ void TexturedRectangle::draw() {
     glBindVertexArray(0);
 }
 
+void TexturedRectangle::setTrans(const glm::mat4 &trans) {
+    TexturedRectangle::trans = trans;
+}
+
 
