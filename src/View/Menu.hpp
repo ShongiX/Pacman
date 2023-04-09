@@ -9,6 +9,7 @@
 #include <vector>
 #include "Widget.hpp"
 #include "glm.hpp"
+#include "../Model/GameData.hpp"
 
 class GameData;
 class System;
@@ -43,9 +44,10 @@ public:
     glm::mat4 map = glm::mat4(1.0f);
     glm::mat4 pacman_trans = glm::mat4(1.0f);
 
-    TexturedRectangle* pacman;
+    TexturedRectangle* pacman{};
 
-
+    Widget* dots[GameData::MAP_WIDTH][GameData::MAP_HEIGHT]{};
+    void removeDot(int j, int i);
 };
 
 

@@ -2,6 +2,7 @@
 // Created by csong on 4/8/2023.
 //
 
+#include <cmath>
 #include "DynamicEntity.hpp"
 
 
@@ -16,4 +17,9 @@ Direction DynamicEntity::getDirection() const {
 
 void DynamicEntity::setDirection(Direction direction) {
     DynamicEntity::direction = direction;
+}
+
+void DynamicEntity::norm() {
+    this->x = std::round(x);
+    this->y = std::round(y);
 }

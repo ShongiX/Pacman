@@ -7,6 +7,7 @@
 #include <cmath>
 #include "Game.hpp"
 #include "../View/Menu.hpp"
+#include "../Controller.hpp"
 
 
 Game::Game() {
@@ -39,6 +40,8 @@ GameData *Game::getInfo() {
 }
 
 void Game::update() {
+    std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
+
     move();
     eat();
 
@@ -48,36 +51,40 @@ void Game::update() {
 bool Game::checkIfCanTurn(Direction direction) {
     if (direction == gd->pacman.getDirection()) return false;
 
-    if (direction == LEFT &&
-        gd->map[(int) std::round(gd->pacman.getX()) - 1][(int) std::round(gd->pacman.getY())] != WALL) {
-        return true;
-    } else if (direction == RIGHT &&
-               gd->map[(int) std::round(gd->pacman.getX()) + 1][(int) std::round(gd->pacman.getY())] != WALL) {
-        return true;
-    } else if (direction == UP &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()) - 1] != WALL) {
-        return true;
-    } else if (direction == DOWN &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()) + 1] != WALL) {
-        return true;
-    }
+//    if (direction == LEFT &&
+//        gd->map[(int) std::round(gd->pacman.getX()-0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+//        return true;
+//    } else if (direction == RIGHT &&
+//               gd->map[(int) std::round(gd->pacman.getX()+0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+//        return true;
+//    } else if (direction == UP &&
+//               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()-0.5)] != WALL) {
+//        return true;
+//    } else if (direction == DOWN &&
+//               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()+0.5)] != WALL) {
+//        return true;
+//    }
 
-    return false;
-}
-
-bool Game::checkIfCanMove() {
-    if (gd->pacman.getDirection() == LEFT &&
-        gd->map[(int) std::round(gd->pacman.getX()) - 1][(int) std::round(gd->pacman.getY())] != WALL) {
-        return true;
-    } else if (gd->pacman.getDirection() == RIGHT &&
-               gd->map[(int) std::round(gd->pacman.getX()) + 1][(int) std::round(gd->pacman.getY())] != WALL) {
-        return true;
-    } else if (gd->pacman.getDirection() == UP &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()) - 1] != WALL) {
-        return true;
-    } else if (gd->pacman.getDirection() == DOWN &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()) + 1] != WALL) {
-        return true;
+    float x = gd->pacman.getX();
+    float y = gd->pacman.getY();
+    int r = std::round(x);
+    int c = std::round(y);
+    if (direction == LEFT) {
+        if (gd->map[r][c] != WALL && gd->map[r-1][c] != WALL) {
+            return true;
+        }
+    } else if (direction == RIGHT) {
+        if (gd->map[r][c] != WALL && gd->map[r+1][c] != WALL) {
+            return true;
+        }
+    } else if (direction == UP) {
+        if (gd->map[r][c] != WALL && gd->map[r][c-1] != WALL) {
+            return true;
+        }
+    } else if (direction == DOWN) {
+        if (gd->map[r][c] != WALL && gd->map[r][c+1] != WALL) {
+            return true;
+        }
     }
 
     return false;
@@ -85,6 +92,25 @@ bool Game::checkIfCanMove() {
 
 void Game::turn(Direction direction) {
     gd->pacman.setDirection(direction);
+    gd->pacman.norm();
+}
+
+bool Game::checkIfCanMove() {
+    if (gd->pacman.getDirection() == LEFT &&
+        gd->map[(int) std::round(gd->pacman.getX()-0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+        return true;
+    } else if (gd->pacman.getDirection() == RIGHT &&
+               gd->map[(int) std::round(gd->pacman.getX()+0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+        return true;
+    } else if (gd->pacman.getDirection() == UP &&
+               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()-0.5)] != WALL) {
+        return true;
+    } else if (gd->pacman.getDirection() == DOWN &&
+               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY()+0.5)] != WALL) {
+        return true;
+    }
+
+    return false;
 }
 
 void Game::move() {
@@ -102,8 +128,9 @@ void Game::move() {
 }
 
 void Game::eat() {
-    if ( gd->map[(int) std::round(gd->pacman.getX()) - 1][(int) std::round(gd->pacman.getY())] == DOT) {
-        gd->map[(int) std::round(gd->pacman.getX()) - 1][(int) std::round(gd->pacman.getY())] = PATH;
+    if (gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY())] == DOT) {
+        gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY())] = PATH;
+        Controller::deleteDot((int) std::round(gd->pacman.getX()), (int) std::round(gd->pacman.getY()));
         --gd->numberOfDots;
     }
 }

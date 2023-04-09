@@ -78,15 +78,15 @@ void GameMenu::update() {
 }
 
 void GameMenu::build() {
-    //Widget* tmp_board = widgets.at(0);
-    //Widget* tmp_pacman = widgets.at(1);
-    Widget *tmp_pacman = widgets.at(0);
+    Widget* tmp_board = widgets.at(0);
+    Widget* tmp_pacman = widgets.at(1);
+    //Widget *tmp_pacman = widgets.at(0);
     widgets.clear();
-    //widgets.push_back(tmp_board);
+    widgets.push_back(tmp_board);
 
     for (int i = 0; i < GameData::MAP_HEIGHT; ++i) {
         for (int j = 0; j < GameData::MAP_WIDTH; ++j) {
-            if (gd->map[j][i] == WALL) {
+            /*if (gd->map[j][i] == WALL) {
                 glm::mat4 tile = glm::mat4(1.0f);
                 tile = glm::translate(tile,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
                 tile = glm::translate(tile, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
@@ -98,13 +98,13 @@ void GameMenu::build() {
                                       TexturedRectangle::defaultIndices,
                                       tile
                 );
-            } else if (gd->map[j][i] == DOT) {
+            } else*/ if (gd->map[j][i] == DOT) {
                 glm::mat4 dot = glm::mat4(1.0f);
                 dot = glm::translate(dot,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
                 dot = glm::translate(dot, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
                 dot = glm::scale(dot, glm::vec3(0.5 / 28.0, 0.5 / 36.0, 1.0));
 
-                new TexturedRectangle(this,
+                dots[j][i] = new TexturedRectangle(this,
                                       "../assets/dot.png",
                                       TexturedRectangle::defaultVertices,
                                       TexturedRectangle::defaultIndices,
@@ -115,6 +115,10 @@ void GameMenu::build() {
     }
 
     widgets.push_back(tmp_pacman);
+}
+
+void GameMenu::removeDot(int j, int i) {
+    removeWidget(dots[j][i]);
 }
 
 

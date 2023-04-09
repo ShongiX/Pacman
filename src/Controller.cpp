@@ -33,3 +33,7 @@ bool Controller::askIfCanTurn(Direction direction) {
 void Controller::turn(Direction direction) {
     game->turn(direction);
 }
+
+void Controller::deleteDot(int j, int i) {
+    gameMenu->removeDot(j,i);
+}

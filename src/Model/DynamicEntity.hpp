@@ -17,6 +17,7 @@ public:
     void setDirection(Direction direction);
 
     void move(float x, float y);
+    void norm();
 };
 
 

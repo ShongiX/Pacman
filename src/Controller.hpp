@@ -27,6 +27,8 @@ public:
     static bool askIfCanTurn(Direction direction);
     static void turn(Direction direction);
 
+    static void deleteDot(int j, int i);
+
     //TEMPORARY
     friend Game;
 };
