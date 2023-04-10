@@ -15,10 +15,15 @@ Blinky::Blinky() : Ghost() {
     target.y = 14;
 }
 
-void Blinky::calculateTarget(float x, float y) {
+void Blinky::calculateTarget(float x, float y, bool chase) {
     if (isOutside) {
-        target.x = x;
-        target.y = y;
+        if (chase) {
+            target.x = x;
+            target.y = y;
+        } else {
+            target.x = 12;
+            target.y = 14;
+        }
     } else {
         target.x = 12;
         target.y = 14;

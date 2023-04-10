@@ -12,7 +12,7 @@ class Clyde : public Ghost {
 public:
     Clyde();
 
-    void calculateTarget(float x, float y) override;
+    void calculateTarget(float x, float y, bool chase) override;
 };
 
 

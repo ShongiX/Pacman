@@ -68,6 +68,10 @@ void Game::update() {
     }
 }
 
+void Game::flip() {
+    chase = !chase;
+}
+
 bool Game::checkIfCanTurn(Direction direction) {
     if (direction == gd->pacman->getDirection()) return false;
     if ((direction == LEFT && gd->pacman->getDirection() == RIGHT) ||
@@ -129,15 +133,15 @@ void Game::move(DynamicEntity *entity) {
     if (!checkIfCanMove(entity)) return;
 
     if (entity->getDirection() == LEFT) {
-        entity->move(-0.1, 0);
+        entity->move(-MOVE_STEP, 0);
         if (entity->getX() < -0.5) entity->setX(28);
     } else if (entity->getDirection() == RIGHT) {
-        entity->move(0.1, 0);
+        entity->move(MOVE_STEP, 0);
         if (entity->getX() > 28.5) entity->setX(0);
     } else if (entity->getDirection() == UP) {
-        entity->move(0, -0.1);
+        entity->move(0, -MOVE_STEP);
     } else if (entity->getDirection() == DOWN) {
-        entity->move(0, 0.1);
+        entity->move(0, MOVE_STEP);
     }
 }
 
@@ -194,7 +198,7 @@ void Game::turnGhost(Ghost *ghost) {
         }
     }
 
-    ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY());
+    ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY(),this->chase);
     Direction direction = ghost->calculatePath(neighbour);
 
     if ((direction == LEFT && ghost->getDirection() == RIGHT) ||
@@ -258,15 +262,15 @@ void Game::moveGhost(Ghost *ghost) {
     if (!checkIfCanMoveGhost(ghost)) return;
 
     if (ghost->getDirection() == LEFT) {
-        ghost->move(-0.1, 0);
+        ghost->move(-MOVE_STEP, 0);
         if (ghost->getX() < -0.5) ghost->setX(28);
     } else if (ghost->getDirection() == RIGHT) {
-        ghost->move(0.1, 0);
+        ghost->move(MOVE_STEP, 0);
         if (ghost->getX() > 28.5) ghost->setX(0);
     } else if (ghost->getDirection() == UP) {
-        ghost->move(0, -0.1);
+        ghost->move(0, -MOVE_STEP);
     } else if (ghost->getDirection() == DOWN) {
-        ghost->move(0, 0.1);
+        ghost->move(0, MOVE_STEP);
     }
 }
 

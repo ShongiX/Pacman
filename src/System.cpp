@@ -13,7 +13,6 @@
 
 unsigned int System::SCREEN_WIDTH;
 unsigned int System::SCREEN_HEIGHT;
-unsigned int System::REFRESH;
 
 Game *System::game{};
 Menu *System::activeMenu{};
@@ -27,10 +26,9 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
-System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh) {
+System::System(unsigned int screenWidth, unsigned int screenHeight) {
     SCREEN_WIDTH = screenWidth;
     SCREEN_HEIGHT = screenHeight;
-    REFRESH = refresh;
 
     initializeGlfw();
 
@@ -87,21 +85,62 @@ void System::init() {
 void System::run() {
     activeMenu = menus[state];
 
-    while (!glfwWindowShouldClose(window)) {
-        clear();
-
+    //Main loop of the program
+    /*while (!glfwWindowShouldClose(window)) {
         if (state == PLAY) {
 
-                Controller::getInfo();
-                Controller::sendInfo();
+            Controller::getInfo();
+            Controller::sendInfo();
 
-                game->update();
-                gameMenu->update();
+            game->update();
+            gameMenu->update();
         }
 
+        clear();
         activeMenu->draw();
         glfwSwapBuffers(window);
         glfwPollEvents();
+    }*/
+
+    double limitFPS = 1.0 / 60.0;
+
+    double startTime = glfwGetTime(), lastTime = startTime, timer = lastTime;
+    double deltaTime = 0, nowTime = 0;
+    int frames = 0 , updates = 0;
+
+    while (!glfwWindowShouldClose(window)) {
+        nowTime = glfwGetTime();
+        deltaTime += (nowTime - lastTime) / limitFPS;
+        lastTime = nowTime;
+
+        if (state == PLAY) {
+            if (deltaTime >= 1.0){
+                Controller::getInfo();
+                Controller::sendInfo();
+
+                if ( (int)(timer - startTime) % 10 ) {
+                    game->flip();
+                }
+
+                game->update();
+                gameMenu->update();
+
+                updates++;
+                deltaTime--;
+            }
+        }
+
+        clear();
+        activeMenu->draw();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+        ++frames;
+        if (glfwGetTime() - timer > 1.0) {
+            timer ++;
+            std::cout << "FPS: " << frames << " Updates:" << updates << "  " << timer << std::endl;
+            updates = 0, frames = 0;
+        }
     }
 }
 
@@ -113,8 +152,6 @@ void System::changeState(State newState) {
 void System::buildMenu() {
     menus[State::MAIN] = buildMainMenu();
     menus[State::PLAY] = buildGameMenu();
-    //menus[State::WIN] = menus[State::PLAY];
-    //menus[State::DEAD] = menus[State::PLAY];
     menus[State::WIN] = buildWinMenu();
     menus[State::DEAD] = buildDeadMenu();
 }
@@ -124,10 +161,6 @@ Menu *System::buildMainMenu() {
 
     //Title screen
     glm::mat4 trans = glm::mat4(1.0f);
-    //trans = glm::scale(trans, glm::vec3(1,0.5,1));
-    //trans = glm::translate(trans, glm::vec3(0,0.75,1));
-    //trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
-
     new TexturedRectangle(
             menu,
             "../assets/pacman_titlescreen.png",
@@ -140,7 +173,6 @@ Menu *System::buildMainMenu() {
     trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.8, 0.1, 1));
     trans = glm::translate(trans, glm::vec3(0, -8.0, 0));
-
     new TexturedRectangle(
             menu,
             "../assets/pacman_starttext.png",
@@ -155,7 +187,6 @@ Menu *System::buildMainMenu() {
 Menu *System::buildGameMenu() {
     gameMenu = new GameMenu();
     if (!gameMenu) exit(2);
-
     return gameMenu;
 }
 
@@ -178,12 +209,11 @@ Menu *System::buildWinMenu() {
 }
 
 Menu *System::buildDeadMenu() {
-    Menu* menu = new Menu();
+    Menu *menu = new Menu();
 
     //Dead text
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
-
     new TexturedRectangle(
             menu,
             "../assets/dead_text.png",
@@ -196,13 +226,14 @@ Menu *System::buildDeadMenu() {
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    //Exit on escape
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
     if (System::getState() == MAIN) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            System::init();
+            System::init(); //restart game
             System::changeState(PLAY);
         }
     } else if (System::getState() == PLAY) {
@@ -217,15 +248,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double xpos, ypos;
-        //getting cursor position
         glfwGetCursorPos(window, &xpos, &ypos);
-        //std::cout << "Cursor Position at (" << xpos << " : " << ypos << ")\n";
     }
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
     System::setScreenHeight(height);
     System::setScreenWidth(width);
@@ -233,14 +260,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 
 System::~System() {
     glfwTerminate();
-}
-
-unsigned int System::getScreenWidth() {
-    return SCREEN_WIDTH;
-}
-
-unsigned int System::getScreenHeight() {
-    return SCREEN_HEIGHT;
 }
 
 void System::setScreenWidth(unsigned int screenWidth) {

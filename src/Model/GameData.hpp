@@ -6,7 +6,7 @@
 #define PACMAN_GAMEDATA_HPP
 
 #include "../Enums.hpp"
-#include "Entity/Pacman.hpp"
+#include "Entity/Pacman/Pacman.hpp"
 #include "Entity/Ghost/Blinky.hpp"
 
 class Game;

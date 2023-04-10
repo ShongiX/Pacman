@@ -17,7 +17,7 @@ private:
 public:
     Inky(Pacman* pacman, Blinky* blinky);
 
-    void calculateTarget(float x, float y) override;
+    void calculateTarget(float x, float y, bool chase) override;
 };
 
 

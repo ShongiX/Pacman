@@ -3,7 +3,7 @@
 //
 
 #include "Pinky.hpp"
-#include "../Pacman.hpp"
+#include "../Pacman/Pacman.hpp"
 
 Pinky::Pinky(Pacman* pacman) {
     this->x = 13;
@@ -18,20 +18,25 @@ Pinky::Pinky(Pacman* pacman) {
     target.y = 14;
 }
 
-void Pinky::calculateTarget(float x, float y) {
+void Pinky::calculateTarget(float x, float y, bool chase) {
     if (isOutside) {
-        if (pacman->getDirection() == LEFT) {
-            target.x = x - 4;
-            target.y = y;
-        } else if (pacman->getDirection() == RIGHT) {
-            target.x = x + 4;
-            target.y = y;
-        } else if (pacman->getDirection() == UP) {
-            target.x = x;
-            target.y = y - 4;
-        } else if (pacman->getDirection() == DOWN) {
-            target.x = x;
-            target.y = y + 4;
+        if (chase) {
+            if (pacman->getDirection() == LEFT) {
+                target.x = x - 4;
+                target.y = y;
+            } else if (pacman->getDirection() == RIGHT) {
+                target.x = x + 4;
+                target.y = y;
+            } else if (pacman->getDirection() == UP) {
+                target.x = x;
+                target.y = y - 4;
+            } else if (pacman->getDirection() == DOWN) {
+                target.x = x;
+                target.y = y + 4;
+            }
+        } else {
+            target.x = 2;
+            target.y = -1;
         }
     } else {
         target.x = 12;

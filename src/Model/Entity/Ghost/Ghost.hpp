@@ -40,7 +40,7 @@ protected:
 
 public:
     Ghost();
-    virtual void calculateTarget(float x, float y) = 0;
+    virtual void calculateTarget(float x, float y, bool chase) = 0;
     Direction calculatePath(int neighbour);
     void setIsOutside(bool isOutside);
     bool getIsOutside() const;

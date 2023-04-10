@@ -4,7 +4,7 @@
 
 #include "Inky.hpp"
 #include "Blinky.hpp"
-#include "../Pacman.hpp"
+#include "../Pacman/Pacman.hpp"
 
 Inky::Inky(Pacman *pacman, Blinky *blinky) {
     this->x = 15;
@@ -20,35 +20,39 @@ Inky::Inky(Pacman *pacman, Blinky *blinky) {
     target.y = 14;
 }
 
-void Inky::calculateTarget(float x, float y) {
+void Inky::calculateTarget(float x, float y, bool chase) {
     if (isOutside) {
-        float px, py; //2 tiles ahead of pacman
-        float bx, by; //blinky exact position
+        if (chase) {
+            float px, py; //2 tiles ahead of pacman
+            float bx, by; //blinky exact position
 
-        if (pacman->getDirection() == LEFT) {
-            px = x - 2;
-            py = y;
-        } else if (pacman->getDirection() == RIGHT) {
-            px = x + 2;
-            py = y;
-        } else if (pacman->getDirection() == UP) {
-            px = x;
-            py = y - 2;
+            if (pacman->getDirection() == LEFT) {
+                px = x - 2;
+                py = y;
+            } else if (pacman->getDirection() == RIGHT) {
+                px = x + 2;
+                py = y;
+            } else if (pacman->getDirection() == UP) {
+                px = x;
+                py = y - 2;
+            } else {
+                px = x;
+                py = y + 2;
+            }
+
+            bx = blinky->getX();
+            by = blinky->getY();
+
+            float dx, dy;
+            dx = bx - px;
+            dy = by - py;
+
+            target.x = x - dx;
+            target.y = y - dy;
         } else {
-            px = x;
-            py = y + 2;
+            target.x = 27;
+            target.y = 34;
         }
-
-        bx = blinky->getX();
-        by = blinky->getY();
-
-        float dx, dy;
-        dx = bx - px;
-        dy = by - py;
-
-        target.x = x - dx;
-        target.y = y - dy;
-
     } else {
         target.x = 15;
         target.y = 14;

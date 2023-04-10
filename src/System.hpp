@@ -16,44 +16,37 @@ class GameMenu;
 class Controller;
 
 class System {
-    static Game* game;
+    GLFWwindow *window{};
 
     static unsigned int SCREEN_WIDTH;
     static unsigned int SCREEN_HEIGHT;
-    static unsigned int REFRESH;
 
-    GLFWwindow *window{};
-
+    static Game* game;
     static Menu* activeMenu;
     static GameMenu* gameMenu;
     static std::map<State, Menu*> menus;
     static State state;
 
-    void buildMenu();
+    static void buildMenu();
     static Menu* buildMainMenu();
     static Menu* buildGameMenu();
     static Menu* buildWinMenu();
     static Menu* buildDeadMenu();
 
 public:
-    System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh);
+    System(unsigned int screenWidth, unsigned int screenHeight);
     ~System();
 
+    static void clear(float r = 0.0, float g = 0.0, float b = 0.0);
     static void init();
     void run();
-
-    static unsigned int getScreenWidth();
-    static unsigned int getScreenHeight();
+    static void handle(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     static void setScreenWidth(unsigned int screenWidth);
     static void setScreenHeight(unsigned int screenHeight);
 
     static State getState();
     static void changeState(State newState);
-
-    static void clear(float r = 0.0, float g = 0.0, float b = 0.0);
-
-    static void handle(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     void initializeGlfw();
 };

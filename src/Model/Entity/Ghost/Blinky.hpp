@@ -12,7 +12,7 @@ class Blinky : public Ghost {
 public:
     Blinky();
 
-    void calculateTarget(float x, float y) override;
+    void calculateTarget(float x, float y, bool chase) override;
 };
 
 

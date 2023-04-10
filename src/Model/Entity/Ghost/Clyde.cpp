@@ -16,16 +16,20 @@ Clyde::Clyde() {
     target.y = 14;
 }
 
-void Clyde::calculateTarget(float x, float y) {
+void Clyde::calculateTarget(float x, float y, bool chase) {
     if (isOutside) {
-        if (std::sqrt(  (this->x - x)*(this->x - x) + (this->y - y)*(this->y - y)   ) > 8 ) {
-            target.x = x;
-            target.y = y;
+        if (chase) {
+            if (std::sqrt(  (this->x - x)*(this->x - x) + (this->y - y)*(this->y - y)   ) > 8 ) {
+                target.x = x;
+                target.y = y;
+            } else {
+                target.x = 0;
+                target.y = 34;
+            }
         } else {
             target.x = 0;
             target.y = 34;
         }
-
     } else {
         target.x = 15;
         target.y = 14;

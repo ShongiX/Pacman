@@ -15,7 +15,7 @@ private:
 public:
     Pinky(Pacman* pacman);
 
-    void calculateTarget(float x, float y) override;
+    void calculateTarget(float x, float y, bool chase) override;
 };
 
 

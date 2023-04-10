@@ -9,12 +9,15 @@
 
 class Game {
     GameData* gd;
+    bool chase = false;
+    const float MOVE_STEP = 0.1;
 
 public:
     Game();
     GameData* getInfo();
 
     void update();
+    void flip();
 
     bool checkIfCanTurn(Direction direction);
     void turn(Direction direction);
