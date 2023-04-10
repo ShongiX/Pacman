@@ -19,7 +19,7 @@ Clyde::Clyde() {
 void Clyde::calculateTarget(float x, float y, bool chase) {
     if (isOutside) {
         if (chase) {
-            if (std::sqrt(  (this->x - x)*(this->x - x) + (this->y - y)*(this->y - y)   ) > 8 ) {
+            if (std::sqrt((this->x - x) * (this->x - x) + (this->y - y) * (this->y - y)) > 8) {
                 target.x = x;
                 target.y = y;
             } else {

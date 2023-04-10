@@ -49,6 +49,8 @@ public:
 
     void updateTime();
 
+    void updateChase();
+
     void updatePacman();
 
     void updateGhosts();
@@ -57,12 +59,10 @@ public:
 
     //Translation matrices
     glm::mat4 pacman_trans = glm::mat4(1.0f);
-    //glm::mat4 blinky_trans = glm::mat4(1.0f);
     glm::mat4 ghost_trans[4] = {glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f)};
 
     TexturedRectangle *map{};
-    TexturedRectangle *pacman{};
-    //TexturedRectangle *blinky{};
+    TexturedRectangle *pacman_anim[3]{};
     TexturedRectangle *ghosts[4]{};
 
     Widget *dots[GameData::MAP_WIDTH][GameData::MAP_HEIGHT]{};

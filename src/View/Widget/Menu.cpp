@@ -10,7 +10,7 @@
 
 void Menu::draw() {
     for (Widget *widget: widgets) widget->draw();
-    widgets[widgets.size()-1]->draw();
+    widgets[widgets.size() - 1]->draw();
 }
 
 void Menu::addWidget(Widget *w) {
@@ -18,7 +18,7 @@ void Menu::addWidget(Widget *w) {
 }
 
 void Menu::removeWidget(Widget *w) {
-    auto newEnd = std::remove_if(widgets.begin(), widgets.end(), [w](const Widget* widget) {
+    auto newEnd = std::remove_if(widgets.begin(), widgets.end(), [w](const Widget *widget) {
         return widget == w;
     });
     widgets.erase(newEnd, widgets.end());
@@ -47,7 +47,23 @@ GameMenu::GameMenu() {
 
     this->pacman_trans = glm::scale(this->pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
-    this->pacman = new TexturedRectangle(
+    /*this->pacman = new TexturedRectangle(
+            this,
+            "../assets/pacman_right.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            this->pacman_trans
+    );*/
+
+    this->pacman_anim[0] = new TexturedRectangle(
+            this,
+            "../assets/pacman_right_big.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            this->pacman_trans
+    );
+
+    this->pacman_anim[1] = new TexturedRectangle(
             this,
             "../assets/pacman_right.png",
             TexturedRectangle::defaultVertices,
@@ -55,7 +71,15 @@ GameMenu::GameMenu() {
             this->pacman_trans
     );
 
-    for (auto & ghost_tran : this->ghost_trans) {
+    this->pacman_anim[2] = new TexturedRectangle(
+            this,
+            "../assets/pacman_full.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            this->pacman_trans
+    );
+
+    for (auto &ghost_tran: this->ghost_trans) {
         ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
     }
 
@@ -118,6 +142,7 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
 
 void GameMenu::update() {
     updateTime();
+    updateChase();
     updatePacman();
     updateGhosts();
     checkState();
@@ -127,8 +152,11 @@ void GameMenu::updateTime() {
     nowTime = glfwGetTime();
     deltaTime += (nowTime - lastTime);
     lastTime = nowTime;
+}
 
-    if (deltaTime > 10.0) {
+void GameMenu::updateChase() {
+    //Scatter/Chase
+    if (deltaTime > 12.0) {
         Controller::flip();
         deltaTime = 0;
     }
@@ -136,7 +164,9 @@ void GameMenu::updateTime() {
 
 void GameMenu::updatePacman() {
     pacman_trans = glm::mat4(1.0f);
-    pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,0.0f));
+    pacman_trans = glm::translate(pacman_trans,
+                                  glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,
+                                            0.0f));
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
@@ -149,14 +179,33 @@ void GameMenu::updatePacman() {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(270.0f), glm::vec3(0.0, 0.0, 1.0));
     }
 
-    pacman->setTrans(pacman_trans);
+    //pacman->setTrans(pacman_trans);
+    pacman_anim[0]->setTrans(pacman_trans);
+    pacman_anim[1]->setTrans(pacman_trans);
+    pacman_anim[2]->setTrans(pacman_trans);
+
+    int t = deltaTime * 10;
+    if (t % 4 == 0) {
+        removeWidget(pacman_anim[0]);
+        addWidget(pacman_anim[1]);
+    } else if (t % 4 == 1) {
+        removeWidget(pacman_anim[1]);
+        addWidget(pacman_anim[2]);
+    } else if (t % 4 == 2) {
+        removeWidget(pacman_anim[2]);
+        addWidget(pacman_anim[1]);
+    } else if (t % 4 == 3) {
+        removeWidget(pacman_anim[1]);
+        addWidget(pacman_anim[0]);
+    }
 }
 
 void GameMenu::updateGhosts() {
 
-    for (int i=0; i<GameData::NUMBER_OF_GHOSTS; ++i) {
+    for (int i = 0; i < GameData::NUMBER_OF_GHOSTS; ++i) {
         ghost_trans[i] = glm::mat4(1.0f);
-        ghost_trans[i] = glm::translate(ghost_trans[i],glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f, (18.0f - gd->ghosts[i]->getY()) / 18.0f,0.0f));
+        ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f,
+                                                                  (18.0f - gd->ghosts[i]->getY()) / 18.0f, 0.0f));
         ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
         ghost_trans[i] = glm::scale(ghost_trans[i], glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
 
@@ -195,15 +244,15 @@ void GameMenu::build() {
             } else*/
             if (gd->map[j][i] == DOT) {
                 glm::mat4 dot = glm::mat4(1.0f);
-                dot = glm::translate(dot,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
+                dot = glm::translate(dot, glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f, 0.0f));
                 dot = glm::translate(dot, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
                 dot = glm::scale(dot, glm::vec3(0.5 / 28.0, 0.5 / 36.0, 1.0));
 
                 dots[j][i] = new TexturedRectangle(this,
-                                      "../assets/dot.png",
-                                      TexturedRectangle::defaultVertices,
-                                      TexturedRectangle::defaultIndices,
-                                      dot
+                                                   "../assets/dot.png",
+                                                   TexturedRectangle::defaultVertices,
+                                                   TexturedRectangle::defaultIndices,
+                                                   dot
                 );
             }
         }
@@ -213,7 +262,10 @@ void GameMenu::build() {
     widgets.push_back(ghosts[1]);
     widgets.push_back(ghosts[2]);
     widgets.push_back(ghosts[3]);
-    widgets.push_back(pacman);
+    //widgets.push_back(pacman);
+    widgets.push_back(pacman_anim[0]);
+    //widgets.push_back(pacman_anim[1]);
+    //widgets.push_back(pacman_anim[2]);
 }
 
 void GameMenu::removeDot(int j, int i) {

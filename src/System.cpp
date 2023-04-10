@@ -85,23 +85,6 @@ void System::init() {
 void System::run() {
     activeMenu = menus[state];
 
-    //Main loop of the program
-    /*while (!glfwWindowShouldClose(window)) {
-        if (state == PLAY) {
-
-            Controller::getInfo();
-            Controller::sendInfo();
-
-            game->update();
-            gameMenu->update();
-        }
-
-        clear();
-        activeMenu->draw();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }*/
-
     double limitFPS = 1.0 / 60.0;
 
     double startTime = glfwGetTime(), lastTime = startTime, timer = lastTime;
