@@ -21,8 +21,8 @@ void Blinky::calculateTarget(float x, float y, bool chase) {
             target.x = x;
             target.y = y;
         } else {
-            target.x = 12;
-            target.y = 14;
+            target.x = 33;
+            target.y = -1;
         }
     } else {
         target.x = 12;

@@ -85,6 +85,7 @@ void Game::flip() {
         } else if (ghost->getDirection() == DOWN) {
             ghost->setDirection(UP);
         }
+        ghost->setCooldown(1.0);
     }
 }
 
