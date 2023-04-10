@@ -91,6 +91,7 @@ void Game::flip() {
 
 bool Game::checkIfCanTurn(Direction direction) {
     if (direction == gd->pacman->getDirection()) return false;
+    if (gd->pacman->getCooldown() < DynamicEntity::COOLDOWN) return false;
     if ((direction == LEFT && gd->pacman->getDirection() == RIGHT) ||
         (direction == RIGHT && gd->pacman->getDirection() == LEFT) ||
         (direction == UP && gd->pacman->getDirection() == DOWN) ||
@@ -124,8 +125,15 @@ bool Game::checkIfCanTurn(Direction direction) {
 }
 
 void Game::turn(Direction direction) {
-    gd->pacman->setDirection(direction);
-    gd->pacman->norm();
+    bool directionChanged = false;
+    if (gd->pacman->getDirection() != direction) directionChanged = true;
+
+    if (directionChanged) {
+        gd->pacman->setDirection(direction);
+        gd->pacman->norm();
+        gd->pacman->setCooldown(0.0);
+    }
+
 }
 
 bool Game::checkIfCanMove(DynamicEntity *entity) {
@@ -177,20 +185,6 @@ void Game::turnGhost(Ghost *ghost) {
     float y = ghost->getY();
     int r = (int) std::round(x);
     int c = (int) std::round(y);
-
-    /*if (ghost->getDirection() == LEFT) {
-        r = std::floor(x);
-        c = std::round(y);
-    } else if (ghost->getDirection() == RIGHT) {
-        r = std::ceil(x);
-        c = std::round(y);
-    } else if (ghost->getDirection() == UP) {
-        r = std::round(x);
-        c = std::floor(y);
-    } else if (ghost->getDirection() == DOWN) {
-        r = std::round(x);
-        c = std::ceil(y);
-    }*/
 
     int neighbour = 0;
 
@@ -244,8 +238,8 @@ void Game::turnGhost(Ghost *ghost) {
     bool directionChanged = false;
     if (ghost->getDirection() != direction) directionChanged = true;
 
-    ghost->setDirection(direction);
     if (directionChanged) {
+        ghost->setDirection(direction);
         ghost->norm();
         ghost->setCooldown(0.0);
     }
