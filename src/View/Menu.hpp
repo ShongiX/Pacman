@@ -41,13 +41,16 @@ public:
     void update();
 
     void updatePacman();
+    void updateBlinky();
     void checkState();
 
     //Translation matrices
     glm::mat4 map = glm::mat4(1.0f);
     glm::mat4 pacman_trans = glm::mat4(1.0f);
+    glm::mat4 blinky_trans = glm::mat4(1.0f);
 
     TexturedRectangle* pacman{};
+    TexturedRectangle* blinky{};
 
     Widget* dots[GameData::MAP_WIDTH][GameData::MAP_HEIGHT]{};
     void removeDot(int j, int i);

@@ -44,8 +44,13 @@ GameData *Game::getInfo() {
 void Game::update() {
     //std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
 
+    //pacman
     move();
     eat();
+
+    //blinky
+    turnBlinky();
+
 
     if (checkIfWon()) gd->gameWon = true;
 }
@@ -61,8 +66,8 @@ bool Game::checkIfCanTurn(Direction direction) {
 
     float x = gd->pacman.getX();
     float y = gd->pacman.getY();
-    int r = std::round(x);
-    int c = std::round(y);
+    int r = (int)std::round(x);
+    int c = (int)std::round(y);
     if (direction == LEFT) {
         if (gd->map[r][c] != WALL && gd->map[r - 1][c] != WALL) {
             return true;
@@ -89,18 +94,18 @@ void Game::turn(Direction direction) {
     gd->pacman.norm();
 }
 
-bool Game::checkIfCanMove() {
-    if (gd->pacman.getDirection() == LEFT &&
-        gd->map[(int) std::round(gd->pacman.getX() - 0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+bool Game::checkIfCanMove(DynamicEntity entity) {
+    if (entity.getDirection() == LEFT &&
+        gd->map[(int) std::round(entity.getX() - 0.5)][(int) std::round(entity.getY())] != WALL) {
         return true;
-    } else if (gd->pacman.getDirection() == RIGHT &&
-               gd->map[(int) std::round(gd->pacman.getX() + 0.5)][(int) std::round(gd->pacman.getY())] != WALL) {
+    } else if (entity.getDirection() == RIGHT &&
+               gd->map[(int) std::round(entity.getX() + 0.5)][(int) std::round(entity.getY())] != WALL) {
         return true;
-    } else if (gd->pacman.getDirection() == UP &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY() - 0.5)] != WALL) {
+    } else if (entity.getDirection() == UP &&
+               gd->map[(int) std::round(entity.getX())][(int) std::round(entity.getY() - 0.5)] != WALL) {
         return true;
-    } else if (gd->pacman.getDirection() == DOWN &&
-               gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY() + 0.5)] != WALL) {
+    } else if (entity.getDirection() == DOWN &&
+               gd->map[(int) std::round(entity.getX())][(int) std::round(entity.getY() + 0.5)] != WALL) {
         return true;
     }
 
@@ -108,7 +113,7 @@ bool Game::checkIfCanMove() {
 }
 
 void Game::move() {
-    if (!checkIfCanMove()) return;
+    if (!checkIfCanMove(gd->pacman)) return;
 
     if (gd->pacman.getDirection() == LEFT) {
         gd->pacman.move(-0.1, 0);
@@ -131,9 +136,44 @@ void Game::eat() {
     }
 }
 
-bool Game::checkIfWon() {
-    return gd->numberOfDots == 0;
+void Game::turnBlinky() {
+    float x = gd->blinky.getX();
+    float y = gd->blinky.getY();
+    int r = (int)std::round(x);
+    int c = (int)std::round(y);
+
+    int neighbour = 0;
+
+    if (gd->map[r-1][c] != WALL ) {
+        neighbour += LEFT;
+    }
+    if (gd->map[r+1][c] != WALL ) {
+        neighbour += RIGHT;
+    }
+    if (gd->map[r][c-1] != WALL ) {
+        neighbour += UP;
+    }
+    if (gd->map[r][c+1] != WALL ) {
+        neighbour += DOWN;
+    }
+
+    gd->blinky.calculateTarget(gd->pacman.getX(),gd->pacman.getY());
+    Direction direction = gd->blinky.calculatePath(neighbour);
+
+    if ((direction == LEFT && gd->blinky.getDirection() == RIGHT) ||
+        (direction == RIGHT && gd->blinky.getDirection() == LEFT) ||
+        (direction == UP && gd->blinky.getDirection() == DOWN) ||
+        (direction == DOWN && gd->blinky.getDirection() == UP)) {
+        return;
+    }
+    gd->blinky.setDirection(direction);
+}
+
+void Game::moveBlinky() {
+    //checkIfCanMove(gd->blinky)
 }
 
 
-
+bool Game::checkIfWon() {
+    return gd->numberOfDots == 0;
+}

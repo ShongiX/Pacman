@@ -8,10 +8,11 @@
 #include "Ghost.hpp"
 
 class Blinky : public Ghost {
-    void calculateTarget(float x, float y) override;
 
 public:
     Blinky();
+
+    void calculateTarget(float x, float y) override;
 };
 
 

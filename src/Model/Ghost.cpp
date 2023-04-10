@@ -5,44 +5,41 @@
 #include "Ghost.hpp"
 #include <cmath>
 
-int Ghost::up = 1;
-int Ghost::right = 2;
-int Ghost::down = 4;
-int Ghost::left = 8;
-
 Ghost::Ghost() : DynamicEntity() {}
 
-int Ghost::calculatePath(int neighbour) {
+Direction Ghost::calculatePath(int neighbour) {
     float minDist = 9999;
     int result = 0;
 
-    if (neighbour & up) {
+    if (neighbour & UP) {
         float dist = std::sqrt((x - target.x) * (x - target.x) + (y - 1 - target.y) * (y - 1 - target.y));
         if (dist < minDist) {
             minDist = dist;
-            result = up;
+            result = UP;
         }
     }
-    if (neighbour & right) {
+    if (neighbour & RIGHT) {
         float dist = std::sqrt((x + 1 - target.x) * (x + 1 - target.x) + (y - target.y) * (y - target.y));
         if (dist < minDist) {
             minDist = dist;
-            result = right;
+            result = RIGHT;
         }
     }
-    if (neighbour & down) {
+    if (neighbour & DOWN) {
         float dist = std::sqrt((x - target.x) * (x - target.x) + (y + 1 - target.y) * (y + 1 - target.y));
         if (dist < minDist) {
             minDist = dist;
-            result = down;
+            result = DOWN;
         }
     }
-    if (neighbour & left) {
+    if (neighbour & LEFT) {
         float dist = std::sqrt((x - 1 - target.x) * (x - 1 - target.x) + (y - target.y) * (y - target.y));
         if (dist < minDist) {
-            result = left;
+            result = LEFT;
         }
     }
 
-    return result;
+
+
+    return static_cast<Direction>(result);
 }

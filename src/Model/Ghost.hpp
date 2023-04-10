@@ -36,12 +36,10 @@ protected:
         float y;
     } target{};
 
-    static int up,right,down,left;
-
 public:
     Ghost();
     virtual void calculateTarget(float x, float y) = 0;
-    int calculatePath(int neighbour);
+    Direction calculatePath(int neighbour);
 };
 
 

@@ -30,7 +30,34 @@ void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mod
 }
 
 GameMenu::GameMenu() {
+    //map
+    glm::mat4 map = glm::mat4(1.0f);
+    map = glm::translate(map, glm::vec3(0, -1 / 36.0, 0));
+    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
 
+    new TexturedRectangle(
+            this,
+            "../assets/map.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            map
+    );
+
+    pacman = new TexturedRectangle(
+            this,
+            "../assets/pacman_right.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            pacman_trans
+    );
+
+    blinky = new TexturedRectangle(
+            this,
+            "../assets/blinky.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            blinky_trans
+    );
 }
 
 void GameMenu::setInfo(GameData *_gd) {
@@ -59,6 +86,7 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
 
 void GameMenu::update() {
     updatePacman();
+    updateBlinky();
     checkState();
 }
 
@@ -78,6 +106,15 @@ void GameMenu::updatePacman() {
     }
 
     pacman->setTrans(pacman_trans);
+}
+
+void GameMenu::updateBlinky() {
+    blinky_trans = glm::mat4(1.0f);
+    blinky_trans = glm::translate(blinky_trans,glm::vec3((gd->blinky.getX() - 14.0f) / 14.0f, (18.0f - gd->blinky.getY()) / 18.0f,0.0f));
+    blinky_trans = glm::translate(blinky_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
+    blinky_trans = glm::scale(blinky_trans, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+
+    blinky->setTrans(blinky_trans);
 }
 
 void GameMenu::checkState() {
@@ -116,6 +153,7 @@ void GameMenu::checkState() {
 void GameMenu::build() {
     Widget* tmp_board = widgets.at(0);
     Widget* tmp_pacman = widgets.at(1);
+    Widget* tmp_blinky = widgets.at(2);
     //Widget *tmp_pacman = widgets.at(0);
     widgets.clear();
     widgets.push_back(tmp_board);
@@ -151,6 +189,7 @@ void GameMenu::build() {
     }
 
     widgets.push_back(tmp_pacman);
+    widgets.push_back(tmp_blinky);
 }
 
 void GameMenu::removeDot(int j, int i) {

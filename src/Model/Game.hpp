@@ -18,9 +18,12 @@ public:
 
     bool checkIfCanTurn(Direction direction);
     void turn(Direction direction);
-    bool checkIfCanMove();
+    bool checkIfCanMove(DynamicEntity entity);
     void move();
     void eat();
+
+    void turnBlinky();
+    void moveBlinky();
 
     bool checkIfWon();
 };

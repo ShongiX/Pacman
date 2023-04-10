@@ -152,30 +152,6 @@ Menu *System::buildGameMenu() {
     gameMenu = new GameMenu();
     if (!gameMenu) exit(2);
 
-    //map
-    glm::mat4 map = glm::mat4(1.0f);
-    map = glm::translate(map, glm::vec3(0, -1 / 36.0, 0));
-    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
-
-    new TexturedRectangle(
-            gameMenu,
-            "../assets/map.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            map
-    );
-
-    //pacman_trans
-    gameMenu->pacman_trans = glm::scale(gameMenu->pacman_trans, glm::vec3(1.0 / 28, 1.0 / 36, 1));
-
-    gameMenu->pacman = new TexturedRectangle(
-            gameMenu,
-            "../assets/pacman_right.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            gameMenu->pacman_trans
-    );
-
     return gameMenu;
 }
 
