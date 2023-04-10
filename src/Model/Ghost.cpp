@@ -12,7 +12,7 @@ Direction Ghost::calculatePath(int neighbour) {
     float minDist = 9999;
     int result = 0;
 
-    std::cout << "Current direction: " << direction << "  Calc path: ";
+    //std::cout << "Current direction: " << direction << "  Calc path: ";
 
     if (neighbour & UP && direction != DOWN) {
         float dist = std::sqrt((x - target.x) * (x - target.x) + (y - 1 - target.y) * (y - 1 - target.y));
@@ -46,7 +46,7 @@ Direction Ghost::calculatePath(int neighbour) {
         //std::cout << "left: " << dist << ", ";
     }
 
-    std::cout << "choice: " << result << "\n";
+    //std::cout << "choice: " << result << "\n";
 
 
     return static_cast<Direction>(result);

@@ -55,7 +55,9 @@ void Game::update() {
 
     //game state
     if (checkIfWon()) gd->gameWon = true;
-    if (checkIfDead()) gd->gameOver = true;
+    if (checkIfDead()) {
+        gd->gameOver = true;
+    }
 }
 
 bool Game::checkIfCanTurn(Direction direction) {

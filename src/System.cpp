@@ -35,7 +35,7 @@ System::System(unsigned int screenWidth, unsigned int screenHeight, unsigned int
     initializeGlfw();
 
     buildMenu();
-    //init();
+    init();
 }
 
 void System::initializeGlfw() {
@@ -75,8 +75,9 @@ void System::clear(float r, float g, float b) {
 
 //initiliaze a new game
 void System::init() {
+    gameMenu = dynamic_cast<GameMenu *>(buildGameMenu());
+    menus[State::PLAY] = gameMenu;
     game = new Game();
-    //gameMenu = new GameMenu();
     Controller::init(game, gameMenu);
     Controller::getInfo();
     Controller::sendInfo();
@@ -112,8 +113,10 @@ void System::changeState(State newState) {
 void System::buildMenu() {
     menus[State::MAIN] = buildMainMenu();
     menus[State::PLAY] = buildGameMenu();
-    menus[State::WIN] = menus[State::PLAY];
-    menus[State::DEAD] = menus[State::PLAY];
+    //menus[State::WIN] = menus[State::PLAY];
+    //menus[State::DEAD] = menus[State::PLAY];
+    menus[State::WIN] = buildWinMenu();
+    menus[State::DEAD] = buildDeadMenu();
 }
 
 Menu *System::buildMainMenu() {
@@ -154,6 +157,42 @@ Menu *System::buildGameMenu() {
     if (!gameMenu) exit(2);
 
     return gameMenu;
+}
+
+Menu *System::buildWinMenu() {
+    Menu *menu = new Menu();
+
+    //Win text
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
+
+    new TexturedRectangle(
+            menu,
+            "../assets/win_text.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            trans
+    );
+
+    return menu;
+}
+
+Menu *System::buildDeadMenu() {
+    Menu* menu = new Menu();
+
+    //Dead text
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
+
+    new TexturedRectangle(
+            menu,
+            "../assets/dead_text.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            trans
+    );
+
+    return menu;
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {

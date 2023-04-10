@@ -7,7 +7,6 @@
 #include "Menu.hpp"
 #include "../Controller.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "../Model/GameData.hpp"
 
 void Menu::draw() {
     for (Widget *widget: widgets) widget->draw();
@@ -31,27 +30,31 @@ void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mod
 
 GameMenu::GameMenu() {
     //map
-    glm::mat4 map = glm::mat4(1.0f);
-    map = glm::translate(map, glm::vec3(0, -1 / 36.0, 0));
-    map = glm::scale(map, glm::vec3(1, 31.0 / 36.0, 1));
+    glm::mat4 map_trans = glm::mat4(1.0f);
+    map_trans = glm::translate(map_trans, glm::vec3(0, -1 / 36.0, 0));
+    map_trans = glm::scale(map_trans, glm::vec3(1, 31.0 / 36.0, 1));
 
-    new TexturedRectangle(
+    this->map = new TexturedRectangle(
             this,
             "../assets/map.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            map
+            map_trans
     );
 
-    pacman = new TexturedRectangle(
+    this->pacman_trans = glm::scale(this->pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
+
+    this->pacman = new TexturedRectangle(
             this,
             "../assets/pacman_right.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            pacman_trans
+            this->pacman_trans
     );
 
-    blinky = new TexturedRectangle(
+    this->blinky_trans = glm::scale(this->blinky_trans, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+
+    this->blinky = new TexturedRectangle(
             this,
             "../assets/blinky.png",
             TexturedRectangle::defaultVertices,
@@ -120,46 +123,19 @@ void GameMenu::updateBlinky() {
 void GameMenu::checkState() {
     if (gd->gameWon) {
         System::changeState(WIN);
-
-        //Win text
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
-
-        new TexturedRectangle(
-                this,
-                "../assets/win_text.png",
-                TexturedRectangle::defaultVertices,
-                TexturedRectangle::defaultIndices,
-                trans
-        );
     }
     if (gd->gameOver) {
         System::changeState(DEAD);
-
-        //Dead text
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
-
-        new TexturedRectangle(
-                this,
-                "../assets/dead_text.png",
-                TexturedRectangle::defaultVertices,
-                TexturedRectangle::defaultIndices,
-                trans
-        );
     }
 }
 
 void GameMenu::build() {
-    Widget* tmp_board = widgets.at(0);
-    Widget* tmp_pacman = widgets.at(1);
-    Widget* tmp_blinky = widgets.at(2);
-    //Widget *tmp_pacman = widgets.at(0);
     widgets.clear();
-    widgets.push_back(tmp_board);
+    widgets.push_back(map);
 
     for (int i = 0; i < GameData::MAP_HEIGHT; ++i) {
         for (int j = 0; j < GameData::MAP_WIDTH; ++j) {
+            //Code for custom maps
             /*if (gd->map[j][i] == WALL) {
                 glm::mat4 tile = glm::mat4(1.0f);
                 tile = glm::translate(tile,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
@@ -172,7 +148,8 @@ void GameMenu::build() {
                                       TexturedRectangle::defaultIndices,
                                       tile
                 );
-            } else*/ if (gd->map[j][i] == DOT) {
+            } else*/
+            if (gd->map[j][i] == DOT) {
                 glm::mat4 dot = glm::mat4(1.0f);
                 dot = glm::translate(dot,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
                 dot = glm::translate(dot, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
@@ -188,8 +165,8 @@ void GameMenu::build() {
         }
     }
 
-    widgets.push_back(tmp_pacman);
-    widgets.push_back(tmp_blinky);
+    widgets.push_back(blinky);
+    widgets.push_back(pacman);
 }
 
 void GameMenu::removeDot(int j, int i) {

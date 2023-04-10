@@ -30,8 +30,10 @@ class System {
     static State state;
 
     void buildMenu();
-    Menu* buildMainMenu();
-    Menu* buildGameMenu();
+    static Menu* buildMainMenu();
+    static Menu* buildGameMenu();
+    static Menu* buildWinMenu();
+    static Menu* buildDeadMenu();
 
 public:
     System(unsigned int screenWidth, unsigned int screenHeight, unsigned int refresh);
