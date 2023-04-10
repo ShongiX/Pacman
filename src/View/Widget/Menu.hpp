@@ -34,6 +34,7 @@ public:
 
 class GameMenu : public Menu {
     GameData *gd{};
+    double lastTime{}, nowTime{}, deltaTime{};
 
 public:
     GameMenu();
@@ -46,9 +47,10 @@ public:
 
     void update();
 
+    void updateTime();
+
     void updatePacman();
 
-    //void updateBlinky();
     void updateGhosts();
 
     void checkState();

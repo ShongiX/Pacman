@@ -11,13 +11,19 @@
 class DynamicEntity : public Entity {
 protected:
     Direction direction;
+    float cooldown = 2;
 
 public:
+    static float COOLDOWN;
+
     Direction getDirection() const;
     void setDirection(Direction direction);
 
     void move(float x, float y);
     void norm();
+
+    float getCooldown() const;
+    void setCooldown(float cooldown);
 };
 
 

@@ -56,6 +56,11 @@ void Game::update() {
 
     //ghosts
     for (int i=0; i<4; ++i) {
+        if (i==0) {
+            //std::cout << gd->ghosts[i]->getX() << " " << gd->ghosts[i]->getY() << "\n";
+            std::cout << gd->ghosts[0]->getDirection() << "\n";
+        }
+
         setIfOutside(gd->ghosts[i]);
         turnGhost(gd->ghosts[i]);
         moveGhost(gd->ghosts[i]);
@@ -70,6 +75,17 @@ void Game::update() {
 
 void Game::flip() {
     chase = !chase;
+    for (auto & ghost : gd->ghosts) {
+        if (ghost->getDirection() == LEFT) {
+            ghost->setDirection(RIGHT);
+        } else if (ghost->getDirection() == RIGHT) {
+            ghost->setDirection(LEFT);
+        } else if (ghost->getDirection() == UP) {
+            ghost->setDirection(DOWN);
+        } else if (ghost->getDirection() == DOWN) {
+            ghost->setDirection(UP);
+        }
+    }
 }
 
 bool Game::checkIfCanTurn(Direction direction) {
@@ -154,10 +170,26 @@ void Game::eat() {
 }
 
 void Game::turnGhost(Ghost *ghost) {
+    if (ghost->getCooldown() < DynamicEntity::COOLDOWN) return;
+
     float x = ghost->getX();
     float y = ghost->getY();
     int r = (int) std::round(x);
     int c = (int) std::round(y);
+
+    /*if (ghost->getDirection() == LEFT) {
+        r = std::floor(x);
+        c = std::round(y);
+    } else if (ghost->getDirection() == RIGHT) {
+        r = std::ceil(x);
+        c = std::round(y);
+    } else if (ghost->getDirection() == UP) {
+        r = std::round(x);
+        c = std::floor(y);
+    } else if (ghost->getDirection() == DOWN) {
+        r = std::round(x);
+        c = std::ceil(y);
+    }*/
 
     int neighbour = 0;
 
@@ -212,7 +244,10 @@ void Game::turnGhost(Ghost *ghost) {
     if (ghost->getDirection() != direction) directionChanged = true;
 
     ghost->setDirection(direction);
-    if (directionChanged) ghost->norm();
+    if (directionChanged) {
+        ghost->norm();
+        ghost->setCooldown(0.0);
+    }
 }
 
 bool Game::checkIfCanMoveGhost(Ghost *ghost) {

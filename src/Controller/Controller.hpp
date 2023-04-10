@@ -29,8 +29,7 @@ public:
 
     static void deleteDot(int j, int i);
 
-    //TEMPORARY
-    friend Game;
+    static void flip();
 };
 
 #endif //PACMAN_CONTROLLER_HPP

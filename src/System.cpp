@@ -114,13 +114,10 @@ void System::run() {
         lastTime = nowTime;
 
         if (state == PLAY) {
+
             if (deltaTime >= 1.0){
                 Controller::getInfo();
                 Controller::sendInfo();
-
-                if ( (int)(timer - startTime) % 10 ) {
-                    game->flip();
-                }
 
                 game->update();
                 gameMenu->update();
@@ -138,7 +135,7 @@ void System::run() {
         ++frames;
         if (glfwGetTime() - timer > 1.0) {
             timer ++;
-            std::cout << "FPS: " << frames << " Updates:" << updates << "  " << timer << std::endl;
+            //std::cout << "FPS: " << frames << " Updates:" << updates << "  " << timer << std::endl;
             updates = 0, frames = 0;
         }
     }

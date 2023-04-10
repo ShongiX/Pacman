@@ -29,6 +29,9 @@ void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mod
 }
 
 GameMenu::GameMenu() {
+    lastTime = glfwGetTime();
+    nowTime = lastTime;
+
     //map
     glm::mat4 map_trans = glm::mat4(1.0f);
     map_trans = glm::translate(map_trans, glm::vec3(0, -1 / 36.0, 0));
@@ -114,10 +117,21 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
 }
 
 void GameMenu::update() {
+    updateTime();
     updatePacman();
-    //updateBlinky();
     updateGhosts();
     checkState();
+}
+
+void GameMenu::updateTime() {
+    nowTime = glfwGetTime();
+    deltaTime += (nowTime - lastTime);
+    lastTime = nowTime;
+
+    if (deltaTime > 10.0) {
+        Controller::flip();
+        deltaTime = 0;
+    }
 }
 
 void GameMenu::updatePacman() {

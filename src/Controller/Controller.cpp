@@ -37,3 +37,7 @@ void Controller::turn(Direction direction) {
 void Controller::deleteDot(int j, int i) {
     gameMenu->removeDot(j,i);
 }
+
+void Controller::flip() {
+    game->flip();
+}

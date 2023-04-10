@@ -11,7 +11,7 @@ Pinky::Pinky(Pacman* pacman) {
 
     this->pacman = pacman;
 
-    this->direction = LEFT;
+    this->direction = RIGHT;
 
     //initial target outside of the spawn box
     target.x = 12;

@@ -13,7 +13,7 @@ Inky::Inky(Pacman *pacman, Blinky *blinky) {
     this->pacman = pacman;
     this->blinky = blinky;
 
-    this->direction = RIGHT;
+    this->direction = LEFT;
 
     //initial target outside of the spawn box
     target.x = 15;

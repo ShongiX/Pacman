@@ -9,7 +9,7 @@ Clyde::Clyde() {
     this->x = 15;
     this->y = 17;
 
-    this->direction = RIGHT;
+    this->direction = LEFT;
 
     //initial target outside of the spawn box
     target.x = 15;
