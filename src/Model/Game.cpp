@@ -167,10 +167,10 @@ void Game::move(DynamicEntity *entity) {
 
     if (entity->getDirection() == LEFT) {
         entity->move(-MOVE_STEP, 0);
-        if (entity->getX() < -0.5) entity->setX(28);
+        if (entity->getX() < 0.0) entity->setX(28);
     } else if (entity->getDirection() == RIGHT) {
         entity->move(MOVE_STEP, 0);
-        if (entity->getX() > 28.5) entity->setX(0);
+        if (entity->getX() > 28.0) entity->setX(0);
     } else if (entity->getDirection() == UP) {
         entity->move(0, -MOVE_STEP);
     } else if (entity->getDirection() == DOWN) {

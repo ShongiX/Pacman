@@ -76,8 +76,8 @@ GameMenu::GameMenu() {
         ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
     }
 
-    std::string dir[] = {"up","right","down","left"};
-    for (int i=0; i<4; ++i) {
+    std::string dir[] = {"up", "right", "down", "left"};
+    for (int i = 0; i < 4; ++i) {
         std::string blinky1 = "../assets/Entities/blinky_";
         std::string pinky1 = "../assets/Entities/pinky_";
         std::string inky1 = "../assets/Entities/inky_";
@@ -89,15 +89,15 @@ GameMenu::GameMenu() {
         std::string inky = inky1 + dir[i] + png;
         std::string clyde = clyde1 + dir[i] + png;
 
-        char* final_blinky = new char[blinky.length()+1];
-        char* final_pinky = new char[blinky.length()+1];
-        char* final_inky = new char[blinky.length()+1];
-        char* final_clyde = new char[blinky.length()+1];
+        char *final_blinky = new char[blinky.length() + 1];
+        char *final_pinky = new char[blinky.length() + 1];
+        char *final_inky = new char[blinky.length() + 1];
+        char *final_clyde = new char[blinky.length() + 1];
 
-        strcpy(final_blinky,blinky.c_str());
-        strcpy(final_pinky,pinky.c_str());
-        strcpy(final_inky,inky.c_str());
-        strcpy(final_clyde,clyde.c_str());
+        strcpy(final_blinky, blinky.c_str());
+        strcpy(final_pinky, pinky.c_str());
+        strcpy(final_inky, inky.c_str());
+        strcpy(final_clyde, clyde.c_str());
 
         this->ghosts[0][i] = new TexturedRectangle(
                 this,
@@ -186,9 +186,7 @@ void GameMenu::updateChase() {
 
 void GameMenu::updatePacman() {
     pacman_trans = glm::mat4(1.0f);
-    pacman_trans = glm::translate(pacman_trans,
-                                  glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,
-                                            0.0f));
+    pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,0.0f));
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
