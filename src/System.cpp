@@ -155,7 +155,7 @@ Menu *System::buildMainMenu() {
     trans = glm::translate(trans, glm::vec3(0, -8.0, 0));
     new TexturedRectangle(
             menu,
-            "../assets/pacman_starttext.png",
+            "../assets/Texts/start_text.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             trans
@@ -179,7 +179,7 @@ Menu *System::buildWinMenu() {
 
     new TexturedRectangle(
             menu,
-            "../assets/win_text.png",
+            "../assets/Texts/win_text.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             trans
@@ -196,7 +196,7 @@ Menu *System::buildDeadMenu() {
     trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
     new TexturedRectangle(
             menu,
-            "../assets/dead_text.png",
+            "../assets/Texts/dead_text.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             trans

@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <cstring>
 #include "../../System.hpp"
 #include "Menu.hpp"
 #include "../../Controller/Controller.hpp"
@@ -47,17 +48,9 @@ GameMenu::GameMenu() {
 
     this->pacman_trans = glm::scale(this->pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
-    /*this->pacman = new TexturedRectangle(
-            this,
-            "../assets/pacman_right.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            this->pacman_trans
-    );*/
-
     this->pacman_anim[0] = new TexturedRectangle(
             this,
-            "../assets/pacman_right_big.png",
+            "../assets/Entities/pacman_right_big.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             this->pacman_trans
@@ -65,7 +58,7 @@ GameMenu::GameMenu() {
 
     this->pacman_anim[1] = new TexturedRectangle(
             this,
-            "../assets/pacman_right.png",
+            "../assets/Entities/pacman_right.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             this->pacman_trans
@@ -73,7 +66,7 @@ GameMenu::GameMenu() {
 
     this->pacman_anim[2] = new TexturedRectangle(
             this,
-            "../assets/pacman_full.png",
+            "../assets/Entities/pacman_full.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             this->pacman_trans
@@ -83,37 +76,66 @@ GameMenu::GameMenu() {
         ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
     }
 
-    this->ghosts[0] = new TexturedRectangle(
-            this,
-            "../assets/blinky.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            ghost_trans[0]
-    );
+    std::string dir[] = {"up","right","down","left"};
+    for (int i=0; i<4; ++i) {
+        std::string blinky1 = "../assets/Entities/blinky_";
+        std::string pinky1 = "../assets/Entities/pinky_";
+        std::string inky1 = "../assets/Entities/inky_";
+        std::string clyde1 = "../assets/Entities/clyde_";
+        std::string png = ".png";
 
-    this->ghosts[1] = new TexturedRectangle(
-            this,
-            "../assets/pinky.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            ghost_trans[1]
-    );
+        std::string blinky = blinky1 + dir[i] + png;
+        std::string pinky = pinky1 + dir[i] + png;
+        std::string inky = inky1 + dir[i] + png;
+        std::string clyde = clyde1 + dir[i] + png;
 
-    this->ghosts[2] = new TexturedRectangle(
-            this,
-            "../assets/inky.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            ghost_trans[2]
-    );
+        char* final_blinky = new char[blinky.length()+1];
+        char* final_pinky = new char[blinky.length()+1];
+        char* final_inky = new char[blinky.length()+1];
+        char* final_clyde = new char[blinky.length()+1];
 
-    this->ghosts[3] = new TexturedRectangle(
-            this,
-            "../assets/clyde.png",
-            TexturedRectangle::defaultVertices,
-            TexturedRectangle::defaultIndices,
-            ghost_trans[3]
-    );
+        strcpy(final_blinky,blinky.c_str());
+        strcpy(final_pinky,pinky.c_str());
+        strcpy(final_inky,inky.c_str());
+        strcpy(final_clyde,clyde.c_str());
+
+        this->ghosts[0][i] = new TexturedRectangle(
+                this,
+                final_blinky,
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                ghost_trans[0]
+        );
+
+        this->ghosts[1][i] = new TexturedRectangle(
+                this,
+                final_pinky,
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                ghost_trans[1]
+        );
+
+        this->ghosts[2][i] = new TexturedRectangle(
+                this,
+                final_inky,
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                ghost_trans[2]
+        );
+
+        this->ghosts[3][i] = new TexturedRectangle(
+                this,
+                final_clyde,
+                TexturedRectangle::defaultVertices,
+                TexturedRectangle::defaultIndices,
+                ghost_trans[3]
+        );
+
+        delete[] final_blinky;
+        delete[] final_pinky;
+        delete[] final_inky;
+        delete[] final_clyde;
+    }
 }
 
 void GameMenu::setInfo(GameData *_gd) {
@@ -201,7 +223,6 @@ void GameMenu::updatePacman() {
 }
 
 void GameMenu::updateGhosts() {
-
     for (int i = 0; i < GameData::NUMBER_OF_GHOSTS; ++i) {
         ghost_trans[i] = glm::mat4(1.0f);
         ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f,
@@ -209,7 +230,21 @@ void GameMenu::updateGhosts() {
         ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
         ghost_trans[i] = glm::scale(ghost_trans[i], glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
 
-        ghosts[i]->setTrans(ghost_trans[i]);
+        ghosts[i][0]->setTrans(ghost_trans[i]);
+        ghosts[i][1]->setTrans(ghost_trans[i]);
+        ghosts[i][2]->setTrans(ghost_trans[i]);
+        ghosts[i][3]->setTrans(ghost_trans[i]);
+
+        removeWidget(ghosts[i][0]);
+        removeWidget(ghosts[i][1]);
+        removeWidget(ghosts[i][2]);
+        removeWidget(ghosts[i][3]);
+
+        Direction dir = gd->ghosts[i]->getDirection();
+        if (dir == UP) addWidget(ghosts[i][0]);
+        if (dir == RIGHT) addWidget(ghosts[i][1]);
+        if (dir == DOWN) addWidget(ghosts[i][2]);
+        if (dir == LEFT) addWidget(ghosts[i][3]);
     }
 }
 
@@ -236,7 +271,7 @@ void GameMenu::build() {
                 tile = glm::scale(tile, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
                 new TexturedRectangle(this,
-                                      "../assets/wall.png",
+                                      "../assets/Entities/wall.png",
                                       TexturedRectangle::defaultVertices,
                                       TexturedRectangle::defaultIndices,
                                       tile
@@ -249,7 +284,7 @@ void GameMenu::build() {
                 dot = glm::scale(dot, glm::vec3(0.5 / 28.0, 0.5 / 36.0, 1.0));
 
                 dots[j][i] = new TexturedRectangle(this,
-                                                   "../assets/dot.png",
+                                                   "../assets/Entities/dot.png",
                                                    TexturedRectangle::defaultVertices,
                                                    TexturedRectangle::defaultIndices,
                                                    dot
@@ -258,10 +293,10 @@ void GameMenu::build() {
         }
     }
 
-    widgets.push_back(ghosts[0]);
-    widgets.push_back(ghosts[1]);
-    widgets.push_back(ghosts[2]);
-    widgets.push_back(ghosts[3]);
+    widgets.push_back(ghosts[0][0]);
+    widgets.push_back(ghosts[1][0]);
+    widgets.push_back(ghosts[2][0]);
+    widgets.push_back(ghosts[3][0]);
     //widgets.push_back(pacman);
     widgets.push_back(pacman_anim[0]);
     //widgets.push_back(pacman_anim[1]);

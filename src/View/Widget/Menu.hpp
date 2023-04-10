@@ -63,7 +63,7 @@ public:
 
     TexturedRectangle *map{};
     TexturedRectangle *pacman_anim[3]{};
-    TexturedRectangle *ghosts[4]{};
+    TexturedRectangle *ghosts[4][4]{};
 
     Widget *dots[GameData::MAP_WIDTH][GameData::MAP_HEIGHT]{};
 
