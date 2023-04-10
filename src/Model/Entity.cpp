@@ -3,7 +3,7 @@
 //
 
 #include "Entity.hpp"
-float Entity::COLLISION_TRESHOLD = 0.1;
+float Entity::COLLISION_TRESHOLD = 0.7;
 
 float Entity::getX() const {
     return x;
@@ -19,4 +19,11 @@ float Entity::getY() const {
 
 void Entity::setY(float y) {
     Entity::y = y;
+}
+
+bool Entity::checkCollision(Entity* a, Entity* b) {
+    if ((a->x - b->x) * (a->x - b->x) + (a->y - b->y)*(a->y - b->y) < COLLISION_TRESHOLD) {
+        return true;
+    }
+    return false;
 }

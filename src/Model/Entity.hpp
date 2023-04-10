@@ -12,12 +12,7 @@ protected:
     static float COLLISION_TRESHOLD;
 
 public:
-    static bool checkCollision(Entity a, Entity b) {
-        if ((a.x - b.x) * (a.x - b.x) + (a.y - b.y)*(a.y - b.y) < COLLISION_TRESHOLD) {
-            return true;
-        }
-        return false;
-    }
+    static bool checkCollision(Entity* a, Entity* b);
 
     float getX() const;
     void setX(float x);

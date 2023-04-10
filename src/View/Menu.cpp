@@ -92,16 +92,16 @@ void GameMenu::update() {
 
 void GameMenu::updatePacman() {
     pacman_trans = glm::mat4(1.0f);
-    pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman.getX() - 14.0f) / 14.0f, (18.0f - gd->pacman.getY()) / 18.0f,0.0f));
+    pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,0.0f));
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
 
-    if (gd->pacman.getDirection() == LEFT) {
+    if (gd->pacman->getDirection() == LEFT) {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(180.0f), glm::vec3(0.0, 0.0, 1.0));
-    } else if (gd->pacman.getDirection() == UP) {
+    } else if (gd->pacman->getDirection() == UP) {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    } else if (gd->pacman.getDirection() == DOWN) {
+    } else if (gd->pacman->getDirection() == DOWN) {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(270.0f), glm::vec3(0.0, 0.0, 1.0));
     }
 
@@ -110,7 +110,7 @@ void GameMenu::updatePacman() {
 
 void GameMenu::updateBlinky() {
     blinky_trans = glm::mat4(1.0f);
-    blinky_trans = glm::translate(blinky_trans,glm::vec3((gd->blinky.getX() - 14.0f) / 14.0f, (18.0f - gd->blinky.getY()) / 18.0f,0.0f));
+    blinky_trans = glm::translate(blinky_trans,glm::vec3((gd->blinky->getX() - 14.0f) / 14.0f, (18.0f - gd->blinky->getY()) / 18.0f,0.0f));
     blinky_trans = glm::translate(blinky_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     blinky_trans = glm::scale(blinky_trans, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
 

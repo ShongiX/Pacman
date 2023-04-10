@@ -12,6 +12,8 @@
 
 Game::Game() {
     gd = new GameData();
+    gd->pacman = new Pacman();
+    gd->blinky = new Blinky();
 
     //Read and load map info
     std::ifstream mapFile("../assets/pacman_map.txt");
@@ -42,32 +44,33 @@ GameData *Game::getInfo() {
 }
 
 void Game::update() {
-    //std::cout << gd->pacman.getX() << " " << gd->pacman.getY() << "\n";
-
     //pacman
-    move();
+    move(gd->pacman);
     eat();
 
     //blinky
-    turnBlinky();
+    setIfOutside(gd->blinky);
+    turnGhost(gd->blinky);
+    moveGhost(gd->blinky);
 
-
+    //game state
     if (checkIfWon()) gd->gameWon = true;
+    if (checkIfDead()) gd->gameOver = true;
 }
 
 bool Game::checkIfCanTurn(Direction direction) {
-    if (direction == gd->pacman.getDirection()) return false;
-    if ((direction == LEFT && gd->pacman.getDirection() == RIGHT) ||
-        (direction == RIGHT && gd->pacman.getDirection() == LEFT) ||
-        (direction == UP && gd->pacman.getDirection() == DOWN) ||
-        (direction == DOWN && gd->pacman.getDirection() == UP)) {
+    if (direction == gd->pacman->getDirection()) return false;
+    if ((direction == LEFT && gd->pacman->getDirection() == RIGHT) ||
+        (direction == RIGHT && gd->pacman->getDirection() == LEFT) ||
+        (direction == UP && gd->pacman->getDirection() == DOWN) ||
+        (direction == DOWN && gd->pacman->getDirection() == UP)) {
         return false;
     }
 
-    float x = gd->pacman.getX();
-    float y = gd->pacman.getY();
-    int r = (int)std::round(x);
-    int c = (int)std::round(y);
+    float x = gd->pacman->getX();
+    float y = gd->pacman->getY();
+    int r = (int) std::round(x);
+    int c = (int) std::round(y);
     if (direction == LEFT) {
         if (gd->map[r][c] != WALL && gd->map[r - 1][c] != WALL) {
             return true;
@@ -90,90 +93,190 @@ bool Game::checkIfCanTurn(Direction direction) {
 }
 
 void Game::turn(Direction direction) {
-    gd->pacman.setDirection(direction);
-    gd->pacman.norm();
+    gd->pacman->setDirection(direction);
+    gd->pacman->norm();
 }
 
-bool Game::checkIfCanMove(DynamicEntity entity) {
-    if (entity.getDirection() == LEFT &&
-        gd->map[(int) std::round(entity.getX() - 0.5)][(int) std::round(entity.getY())] != WALL) {
+bool Game::checkIfCanMove(DynamicEntity *entity) {
+    if (entity->getDirection() == LEFT &&
+        gd->map[(int) std::round(entity->getX() - 0.5)][(int) std::round(entity->getY())] != WALL) {
         return true;
-    } else if (entity.getDirection() == RIGHT &&
-               gd->map[(int) std::round(entity.getX() + 0.5)][(int) std::round(entity.getY())] != WALL) {
+    } else if (entity->getDirection() == RIGHT &&
+               gd->map[(int) std::round(entity->getX() + 0.5)][(int) std::round(entity->getY())] != WALL) {
         return true;
-    } else if (entity.getDirection() == UP &&
-               gd->map[(int) std::round(entity.getX())][(int) std::round(entity.getY() - 0.5)] != WALL) {
+    } else if (entity->getDirection() == UP &&
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() - 0.5)] != WALL) {
         return true;
-    } else if (entity.getDirection() == DOWN &&
-               gd->map[(int) std::round(entity.getX())][(int) std::round(entity.getY() + 0.5)] != WALL) {
+    } else if (entity->getDirection() == DOWN &&
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() + 0.5)] != WALL) {
         return true;
     }
 
     return false;
 }
 
-void Game::move() {
-    if (!checkIfCanMove(gd->pacman)) return;
+void Game::move(DynamicEntity *entity) {
+    if (!checkIfCanMove(entity)) return;
 
-    if (gd->pacman.getDirection() == LEFT) {
-        gd->pacman.move(-0.1, 0);
-        if (gd->pacman.getX() < -0.5) gd->pacman.setX(28);
-    } else if (gd->pacman.getDirection() == RIGHT) {
-        gd->pacman.move(0.1, 0);
-        if (gd->pacman.getX() > 28.5) gd->pacman.setX(0);
-    } else if (gd->pacman.getDirection() == UP) {
-        gd->pacman.move(0, -0.1);
-    } else if (gd->pacman.getDirection() == DOWN) {
-        gd->pacman.move(0, 0.1);
+    if (entity->getDirection() == LEFT) {
+        entity->move(-0.1, 0);
+        if (entity->getX() < -0.5) entity->setX(28);
+    } else if (entity->getDirection() == RIGHT) {
+        entity->move(0.1, 0);
+        if (entity->getX() > 28.5) entity->setX(0);
+    } else if (entity->getDirection() == UP) {
+        entity->move(0, -0.1);
+    } else if (entity->getDirection() == DOWN) {
+        entity->move(0, 0.1);
     }
 }
 
 void Game::eat() {
-    if (gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY())] == DOT) {
-        gd->map[(int) std::round(gd->pacman.getX())][(int) std::round(gd->pacman.getY())] = PATH;
-        Controller::deleteDot((int) std::round(gd->pacman.getX()), (int) std::round(gd->pacman.getY()));
+    if (gd->map[(int) std::round(gd->pacman->getX())][(int) std::round(gd->pacman->getY())] == DOT) {
+        gd->map[(int) std::round(gd->pacman->getX())][(int) std::round(gd->pacman->getY())] = PATH;
+        Controller::deleteDot((int) std::round(gd->pacman->getX()), (int) std::round(gd->pacman->getY()));
         --gd->numberOfDots;
     }
 }
 
-void Game::turnBlinky() {
-    float x = gd->blinky.getX();
-    float y = gd->blinky.getY();
-    int r = (int)std::round(x);
-    int c = (int)std::round(y);
+void Game::turnGhost(Ghost *ghost) {
+    float x = ghost->getX();
+    float y = ghost->getY();
+    int r = (int) std::round(x);
+    int c = (int) std::round(y);
 
     int neighbour = 0;
 
-    if (gd->map[r-1][c] != WALL ) {
-        neighbour += LEFT;
+    if (gd->map[r - 1][c] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r - 1][c] != GHOST_ONLY) {
+                neighbour += LEFT;
+            }
+        } else {
+            neighbour += LEFT;
+        }
     }
-    if (gd->map[r+1][c] != WALL ) {
-        neighbour += RIGHT;
+    if (gd->map[r + 1][c] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r + 1][c] != GHOST_ONLY) {
+                neighbour += RIGHT;
+            }
+        } else {
+            neighbour += RIGHT;
+        }
     }
-    if (gd->map[r][c-1] != WALL ) {
-        neighbour += UP;
+    if (gd->map[r][c - 1] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r][c - 1] != GHOST_ONLY) {
+                neighbour += UP;
+            }
+        } else {
+            neighbour += UP;
+        }
     }
-    if (gd->map[r][c+1] != WALL ) {
-        neighbour += DOWN;
+    if (gd->map[r][c + 1] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r][c + 1] != GHOST_ONLY) {
+                neighbour += DOWN;
+            }
+        } else {
+            neighbour += DOWN;
+        }
     }
 
-    gd->blinky.calculateTarget(gd->pacman.getX(),gd->pacman.getY());
-    Direction direction = gd->blinky.calculatePath(neighbour);
+    ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY());
+    Direction direction = ghost->calculatePath(neighbour);
 
-    if ((direction == LEFT && gd->blinky.getDirection() == RIGHT) ||
-        (direction == RIGHT && gd->blinky.getDirection() == LEFT) ||
-        (direction == UP && gd->blinky.getDirection() == DOWN) ||
-        (direction == DOWN && gd->blinky.getDirection() == UP)) {
+    if ((direction == LEFT && ghost->getDirection() == RIGHT) ||
+        (direction == RIGHT && ghost->getDirection() == LEFT) ||
+        (direction == UP && ghost->getDirection() == DOWN) ||
+        (direction == DOWN && ghost->getDirection() == UP)) {
         return;
     }
-    gd->blinky.setDirection(direction);
+
+    bool directionChanged = false;
+    if (ghost->getDirection() != direction) directionChanged = true;
+
+    ghost->setDirection(direction);
+    if (directionChanged) ghost->norm();
 }
 
-void Game::moveBlinky() {
-    //checkIfCanMove(gd->blinky)
+bool Game::checkIfCanMoveGhost(Ghost *ghost) {
+    float x = ghost->getX();
+    float y = ghost->getY();
+    int r = (int) std::round(x);
+    int c = (int) std::round(y);
+
+    if (ghost->getDirection() == LEFT && gd->map[r - 1][c] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r - 1][c] != GHOST_ONLY) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    } else if (ghost->getDirection() == RIGHT && gd->map[r + 1][c] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r + 1][c] != GHOST_ONLY) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    } else if (ghost->getDirection() == UP && gd->map[r][c - 1] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r][c - 1] != GHOST_ONLY) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    } else if (ghost->getDirection() == DOWN && gd->map[r][c + 1] != WALL) {
+        if (ghost->getIsOutside()) {
+            if (gd->map[r][c + 1] != GHOST_ONLY) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    return false;
 }
 
+void Game::moveGhost(Ghost *ghost) {
+    if (!checkIfCanMoveGhost(ghost)) return;
+
+    if (ghost->getDirection() == LEFT) {
+        ghost->move(-0.1, 0);
+        if (ghost->getX() < -0.5) ghost->setX(28);
+    } else if (ghost->getDirection() == RIGHT) {
+        ghost->move(0.1, 0);
+        if (ghost->getX() > 28.5) ghost->setX(0);
+    } else if (ghost->getDirection() == UP) {
+        ghost->move(0, -0.1);
+    } else if (ghost->getDirection() == DOWN) {
+        ghost->move(0, 0.1);
+    }
+}
+
+void Game::setIfOutside(Ghost *ghost) {
+    float x = ghost->getX();
+    float y = ghost->getY();
+    int r = (int) std::round(x);
+    int c = (int) std::round(y);
+
+    if (gd->map[r][c] != GHOST_ONLY) {
+        ghost->setIsOutside(true);
+    } else {
+        ghost->setIsOutside(false);
+    }
+}
 
 bool Game::checkIfWon() {
     return gd->numberOfDots == 0;
+}
+
+bool Game::checkIfDead() {
+    return Entity::checkCollision(gd->pacman, gd->blinky);
 }

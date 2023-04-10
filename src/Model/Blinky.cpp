@@ -7,11 +7,20 @@
 Blinky::Blinky() : Ghost() {
     this->x = 12;
     this->y = 17;
+
+    //initial target outside of the spawn box
+    target.x = 12;
+    target.y = 14;
 }
 
 void Blinky::calculateTarget(float x, float y) {
-    target.x = x;
-    target.y = y;
+    if (isOutside) {
+        target.x = x;
+        target.y = y;
+    } else {
+        target.x = 12;
+        target.y = 14;
+    }
 }
 
 

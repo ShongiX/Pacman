@@ -36,10 +36,14 @@ protected:
         float y;
     } target{};
 
+    bool isOutside = false;
+
 public:
     Ghost();
     virtual void calculateTarget(float x, float y) = 0;
     Direction calculatePath(int neighbour);
+    void setIsOutside(bool isOutside);
+    bool getIsOutside() const;
 };
 
 

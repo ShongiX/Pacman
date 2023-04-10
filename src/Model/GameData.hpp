@@ -25,8 +25,8 @@ private:
     int score = 0;
     int numberOfDots = 246;
 
-    Pacman pacman;
-    Blinky blinky;
+    Pacman* pacman;
+    Blinky* blinky;
 
     friend Game;
     friend GameMenu;

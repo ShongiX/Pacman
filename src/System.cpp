@@ -76,6 +76,7 @@ void System::clear(float r, float g, float b) {
 //initiliaze a new game
 void System::init() {
     game = new Game();
+    //gameMenu = new GameMenu();
     Controller::init(game, gameMenu);
     Controller::getInfo();
     Controller::sendInfo();
@@ -162,8 +163,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
     if (System::getState() == MAIN) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            System::changeState(PLAY);
             System::init();
+            System::changeState(PLAY);
         }
     } else if (System::getState() == PLAY) {
         System::handle(window, key, scancode, action, mods);
