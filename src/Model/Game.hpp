@@ -17,6 +17,9 @@ public:
     GameData* getInfo();
 
     void update();
+    void updatePacman();
+    void updateGhosts();
+    void updateStates();
     void flip();
 
     bool checkIfCanTurn(Direction direction);

@@ -50,32 +50,32 @@ GameData *Game::getInfo() {
 }
 
 void Game::update() {
-    //pacman
+    updatePacman();
+    updateGhosts();
+    updateStates();
+}
+
+void Game::updatePacman() {
     move(gd->pacman);
     eat();
+}
 
-    //ghosts
-    for (int i=0; i<4; ++i) {
-        if (i==0) {
-            //std::cout << gd->ghosts[i]->getX() << " " << gd->ghosts[i]->getY() << "\n";
-            std::cout << gd->ghosts[0]->getDirection() << "\n";
-        }
-
-        setIfOutside(gd->ghosts[i]);
-        turnGhost(gd->ghosts[i]);
-        moveGhost(gd->ghosts[i]);
+void Game::updateGhosts() {
+    for (auto &ghost: gd->ghosts) {
+        setIfOutside(ghost);
+        turnGhost(ghost);
+        moveGhost(ghost);
     }
+}
 
-    //game state
+void Game::updateStates() {
     if (checkIfWon()) gd->gameWon = true;
-    if (checkIfDead()) {
-        gd->gameOver = true;
-    }
+    if (checkIfDead()) gd->gameOver = true;
 }
 
 void Game::flip() {
     chase = !chase;
-    for (auto & ghost : gd->ghosts) {
+    for (auto &ghost: gd->ghosts) {
         if (ghost->getDirection() == LEFT) {
             ghost->setDirection(RIGHT);
         } else if (ghost->getDirection() == RIGHT) {
@@ -104,19 +104,23 @@ bool Game::checkIfCanTurn(Direction direction) {
     int r = (int) std::round(x);
     int c = (int) std::round(y);
     if (direction == LEFT) {
-        if (gd->map[r][c] != WALL && gd->map[r - 1][c] != WALL) {
+        if (gd->map[r][c] != WALL && gd->map[r - 1][c] != WALL &&
+            gd->map[r][c] != GHOST_ONLY && gd->map[r - 1][c] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == RIGHT) {
-        if (gd->map[r][c] != WALL && gd->map[r + 1][c] != WALL) {
+        if (gd->map[r][c] != WALL && gd->map[r + 1][c] != WALL &&
+            gd->map[r][c] != GHOST_ONLY && gd->map[r + 1][c] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == UP) {
-        if (gd->map[r][c] != WALL && gd->map[r][c - 1] != WALL) {
+        if (gd->map[r][c] != WALL && gd->map[r][c - 1] != WALL &&
+            gd->map[r][c] != GHOST_ONLY && gd->map[r][c - 1] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == DOWN) {
-        if (gd->map[r][c] != WALL && gd->map[r][c + 1] != WALL) {
+        if (gd->map[r][c] != WALL && gd->map[r][c + 1] != WALL &&
+            gd->map[r][c] != GHOST_ONLY && gd->map[r][c + 1] != GHOST_ONLY) {
             return true;
         }
     }
@@ -138,16 +142,20 @@ void Game::turn(Direction direction) {
 
 bool Game::checkIfCanMove(DynamicEntity *entity) {
     if (entity->getDirection() == LEFT &&
-        gd->map[(int) std::round(entity->getX() - 0.5)][(int) std::round(entity->getY())] != WALL) {
+        gd->map[(int) std::round(entity->getX() - 0.5)][(int) std::round(entity->getY())] != WALL &&
+        gd->map[(int) std::round(entity->getX() - 0.5)][(int) std::round(entity->getY())] != GHOST_ONLY) {
         return true;
     } else if (entity->getDirection() == RIGHT &&
-               gd->map[(int) std::round(entity->getX() + 0.5)][(int) std::round(entity->getY())] != WALL) {
+               gd->map[(int) std::round(entity->getX() + 0.5)][(int) std::round(entity->getY())] != WALL &&
+               gd->map[(int) std::round(entity->getX() + 0.5)][(int) std::round(entity->getY())] != GHOST_ONLY) {
         return true;
     } else if (entity->getDirection() == UP &&
-               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() - 0.5)] != WALL) {
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() - 0.5)] != WALL &&
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() - 0.5)] != GHOST_ONLY) {
         return true;
     } else if (entity->getDirection() == DOWN &&
-               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() + 0.5)] != WALL) {
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() + 0.5)] != WALL &&
+               gd->map[(int) std::round(entity->getX())][(int) std::round(entity->getY() + 0.5)] != GHOST_ONLY) {
         return true;
     }
 
@@ -225,7 +233,7 @@ void Game::turnGhost(Ghost *ghost) {
         }
     }
 
-    ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY(),this->chase);
+    ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY(), this->chase);
     Direction direction = ghost->calculatePath(neighbour);
 
     if ((direction == LEFT && ghost->getDirection() == RIGHT) ||
@@ -322,7 +330,7 @@ bool Game::checkIfWon() {
 }
 
 bool Game::checkIfDead() {
-    for (auto & ghost : gd->ghosts) {
+    for (auto &ghost: gd->ghosts) {
         if (Entity::checkCollision(gd->pacman, ghost)) return true;
     }
     return false;
