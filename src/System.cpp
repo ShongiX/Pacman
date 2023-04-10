@@ -6,8 +6,8 @@
 #include "System.hpp"
 #include "View/stb_image.h"
 #include "Model/Game.hpp"
-#include "View/Menu.hpp"
-#include "Controller.hpp"
+#include "View/Widget/Menu.hpp"
+#include "Controller/Controller.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 
@@ -219,7 +219,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
         double xpos, ypos;
         //getting cursor position
         glfwGetCursorPos(window, &xpos, &ypos);
-        std::cout << "Cursor Position at (" << xpos << " : " << ypos << ")\n";
+        //std::cout << "Cursor Position at (" << xpos << " : " << ypos << ")\n";
     }
 }
 

@@ -6,7 +6,7 @@
 #define PACMAN_DYNAMICENTITY_HPP
 
 #include "Entity.hpp"
-#include "../Enums.hpp"
+#include "../../../Enums.hpp"
 
 class DynamicEntity : public Entity {
 protected:

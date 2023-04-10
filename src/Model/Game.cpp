@@ -6,14 +6,20 @@
 #include <fstream>
 #include <cmath>
 #include "Game.hpp"
-#include "../View/Menu.hpp"
-#include "../Controller.hpp"
+#include "../View/Widget/Menu.hpp"
+#include "../Controller/Controller.hpp"
+#include "Entity/Ghost/Pinky.hpp"
+#include "Entity/Ghost/Inky.hpp"
+#include "Entity/Ghost/Clyde.hpp"
 
 
 Game::Game() {
     gd = new GameData();
     gd->pacman = new Pacman();
-    gd->blinky = new Blinky();
+    gd->ghosts[0] = new Blinky();
+    gd->ghosts[1] = new Pinky(gd->pacman);
+    gd->ghosts[2] = new Inky(gd->pacman, dynamic_cast<Blinky *>(gd->ghosts[0]));
+    gd->ghosts[3] = new Clyde();
 
     //Read and load map info
     std::ifstream mapFile("../assets/pacman_map.txt");
@@ -48,10 +54,12 @@ void Game::update() {
     move(gd->pacman);
     eat();
 
-    //blinky
-    setIfOutside(gd->blinky);
-    turnGhost(gd->blinky);
-    moveGhost(gd->blinky);
+    //ghosts
+    for (int i=0; i<4; ++i) {
+        setIfOutside(gd->ghosts[i]);
+        turnGhost(gd->ghosts[i]);
+        moveGhost(gd->ghosts[i]);
+    }
 
     //game state
     if (checkIfWon()) gd->gameWon = true;
@@ -280,5 +288,8 @@ bool Game::checkIfWon() {
 }
 
 bool Game::checkIfDead() {
-    return Entity::checkCollision(gd->pacman, gd->blinky);
+    for (auto & ghost : gd->ghosts) {
+        if (Entity::checkCollision(gd->pacman, ghost)) return true;
+    }
+    return false;
 }

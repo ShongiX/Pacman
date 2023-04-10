@@ -3,9 +3,9 @@
 //
 
 #include <algorithm>
-#include "../System.hpp"
+#include "../../System.hpp"
 #include "Menu.hpp"
-#include "../Controller.hpp"
+#include "../../Controller/Controller.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 void Menu::draw() {
@@ -52,14 +52,40 @@ GameMenu::GameMenu() {
             this->pacman_trans
     );
 
-    this->blinky_trans = glm::scale(this->blinky_trans, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+    for (auto & ghost_tran : this->ghost_trans) {
+        ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+    }
 
-    this->blinky = new TexturedRectangle(
+    this->ghosts[0] = new TexturedRectangle(
             this,
             "../assets/blinky.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
-            blinky_trans
+            ghost_trans[0]
+    );
+
+    this->ghosts[1] = new TexturedRectangle(
+            this,
+            "../assets/pinky.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            ghost_trans[1]
+    );
+
+    this->ghosts[2] = new TexturedRectangle(
+            this,
+            "../assets/inky.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            ghost_trans[2]
+    );
+
+    this->ghosts[3] = new TexturedRectangle(
+            this,
+            "../assets/clyde.png",
+            TexturedRectangle::defaultVertices,
+            TexturedRectangle::defaultIndices,
+            ghost_trans[3]
     );
 }
 
@@ -89,7 +115,8 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
 
 void GameMenu::update() {
     updatePacman();
-    updateBlinky();
+    //updateBlinky();
+    updateGhosts();
     checkState();
 }
 
@@ -111,13 +138,16 @@ void GameMenu::updatePacman() {
     pacman->setTrans(pacman_trans);
 }
 
-void GameMenu::updateBlinky() {
-    blinky_trans = glm::mat4(1.0f);
-    blinky_trans = glm::translate(blinky_trans,glm::vec3((gd->blinky->getX() - 14.0f) / 14.0f, (18.0f - gd->blinky->getY()) / 18.0f,0.0f));
-    blinky_trans = glm::translate(blinky_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
-    blinky_trans = glm::scale(blinky_trans, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+void GameMenu::updateGhosts() {
 
-    blinky->setTrans(blinky_trans);
+    for (int i=0; i<GameData::NUMBER_OF_GHOSTS; ++i) {
+        ghost_trans[i] = glm::mat4(1.0f);
+        ghost_trans[i] = glm::translate(ghost_trans[i],glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f, (18.0f - gd->ghosts[i]->getY()) / 18.0f,0.0f));
+        ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
+        ghost_trans[i] = glm::scale(ghost_trans[i], glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
+
+        ghosts[i]->setTrans(ghost_trans[i]);
+    }
 }
 
 void GameMenu::checkState() {
@@ -165,7 +195,10 @@ void GameMenu::build() {
         }
     }
 
-    widgets.push_back(blinky);
+    widgets.push_back(ghosts[0]);
+    widgets.push_back(ghosts[1]);
+    widgets.push_back(ghosts[2]);
+    widgets.push_back(ghosts[3]);
     widgets.push_back(pacman);
 }
 

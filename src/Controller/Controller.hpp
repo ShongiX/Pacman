@@ -5,7 +5,7 @@
 #ifndef PACMAN_CONTROLLER_HPP
 #define PACMAN_CONTROLLER_HPP
 
-#include "Enums.hpp"
+#include "../Enums.hpp"
 
 class Game;
 class GameMenu;

@@ -4,7 +4,7 @@
 
 #include <string>
 #include "TexturedRectangle.hpp"
-#include "stb_image.h"
+#include "../stb_image.h"
 #include "iostream"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"

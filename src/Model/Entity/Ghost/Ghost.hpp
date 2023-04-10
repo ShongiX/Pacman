@@ -5,7 +5,7 @@
 #ifndef PACMAN_GHOST_HPP
 #define PACMAN_GHOST_HPP
 
-#include "DynamicEntity.hpp"
+#include "../Core/DynamicEntity.hpp"
 
 /**
  * The neighbour parameter serves to tell how many neighbouring empty cells, meaning paths are adjacent to the current ghost

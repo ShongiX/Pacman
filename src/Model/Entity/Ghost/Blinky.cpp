@@ -8,6 +8,8 @@ Blinky::Blinky() : Ghost() {
     this->x = 12;
     this->y = 17;
 
+    this->direction = LEFT;
+
     //initial target outside of the spawn box
     target.x = 12;
     target.y = 14;

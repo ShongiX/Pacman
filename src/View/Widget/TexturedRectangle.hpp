@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "glad/glad.h"
-#include "shader.h"
+#include "../shader.h"
 #include "Widget.hpp"
 
 class TexturedRectangle : public Widget {
