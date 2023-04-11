@@ -1,5 +1,5 @@
 //
-// Created by csong on 4/7/2023.
+// Created by laccs on 4/7/2023.
 //
 
 #ifndef PACMAN_MENU_HPP
@@ -9,7 +9,7 @@
 #include <vector>
 #include "Widget.hpp"
 #include "glm.hpp"
-#include "../../Model/GameData.hpp"
+#include "../../Model/Game/GameData.hpp"
 
 class GameData;
 

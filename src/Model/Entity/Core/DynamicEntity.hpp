@@ -1,5 +1,5 @@
 //
-// Created by csong on 4/8/2023.
+// Created by laccs on 4/8/2023.
 //
 
 #ifndef PACMAN_DYNAMICENTITY_HPP

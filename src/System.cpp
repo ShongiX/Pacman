@@ -1,11 +1,11 @@
 //
-// Created by csong on 4/7/2023.
+// Created by laccs on 4/7/2023.
 //
 
 #include <iostream>
 #include "System.hpp"
 #include "View/stb_image.h"
-#include "Model/Game.hpp"
+#include "Model/Game/Game.hpp"
 #include "View/Widget/Menu.hpp"
 #include "Controller/Controller.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -143,7 +143,7 @@ Menu *System::buildMainMenu() {
     glm::mat4 trans = glm::mat4(1.0f);
     new TexturedRectangle(
             menu,
-            "../assets/pacman_titlescreen.png",
+            "../assets/Texts/pacman_titlescreen.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             trans

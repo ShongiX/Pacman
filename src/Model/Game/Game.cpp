@@ -1,16 +1,16 @@
 //
-// Created by csong on 4/7/2023.
+// Created by laccs on 4/7/2023.
 //
 
-#include "../System.hpp"
+#include "../../System.hpp"
 #include <fstream>
 #include <cmath>
 #include "Game.hpp"
-#include "../View/Widget/Menu.hpp"
-#include "../Controller/Controller.hpp"
-#include "Entity/Ghost/Pinky.hpp"
-#include "Entity/Ghost/Inky.hpp"
-#include "Entity/Ghost/Clyde.hpp"
+#include "../../View/Widget/Menu.hpp"
+#include "../../Controller/Controller.hpp"
+#include "../Entity/Ghost/Pinky.hpp"
+#include "../Entity/Ghost/Inky.hpp"
+#include "../Entity/Ghost/Clyde.hpp"
 
 
 Game::Game() {
@@ -24,7 +24,7 @@ Game::Game() {
     gd->ghosts[0]->setEnabled(true);
 
     //Read and load map info
-    std::ifstream mapFile("../assets/pacman_map.txt");
+    std::ifstream mapFile("../assets/Map/pacman_map.txt");
     if (!mapFile.is_open()) {
         std::cout << "Failed to read map";
         exit(1);

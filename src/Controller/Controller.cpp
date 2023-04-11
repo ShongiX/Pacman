@@ -1,9 +1,9 @@
 //
-// Created by csong on 4/7/2023.
+// Created by laccs on 4/7/2023.
 //
 
 #include "Controller.hpp"
-#include "../Model/Game.hpp"
+#include "../Model/Game/Game.hpp"
 #include "../View/Widget/Menu.hpp"
 
 Game* Controller::game{};

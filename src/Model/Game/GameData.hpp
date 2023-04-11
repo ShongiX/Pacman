@@ -1,13 +1,13 @@
 //
-// Created by csong on 4/7/2023.
+// Created by laccs on 4/7/2023.
 //
 
 #ifndef PACMAN_GAMEDATA_HPP
 #define PACMAN_GAMEDATA_HPP
 
-#include "../Enums.hpp"
-#include "Entity/Pacman/Pacman.hpp"
-#include "Entity/Ghost/Blinky.hpp"
+#include "../../Enums.hpp"
+#include "../Entity/Pacman/Pacman.hpp"
+#include "../Entity/Ghost/Blinky.hpp"
 
 class Game;
 class GameMenu;
