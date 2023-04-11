@@ -37,7 +37,7 @@ GameMenu::GameMenu() {
 
     this->map = new TexturedRectangle(
             this,
-            "../assets/map.png",
+            "../assets/Map/map.png",
             TexturedRectangle::defaultVertices,
             TexturedRectangle::defaultIndices,
             map_trans
@@ -151,8 +151,8 @@ void GameMenu::updateTime() {
 }
 
 void GameMenu::updateChase() {
-    //If not all ghosts are enabled and 4 second passed since last ghost enabled, enable the next one
-    if (gd->enabled < GameData::NUMBER_OF_GHOSTS && deltaTime > 4.0 * gd->enabled) {
+    //If not all ghosts are enabled and 3 second passed since last ghost enabled, enable the next one
+    if (gd->enabled < GameData::NUMBER_OF_GHOSTS && deltaTime > 3.0 * gd->enabled) {
         Controller::enableNext();
     }
 
@@ -254,12 +254,24 @@ void GameMenu::build() {
                 tile = glm::translate(tile, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
                 tile = glm::scale(tile, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
-                new TexturedRectangle(this,
-                                      "../assets/Entities/wall.png",
-                                      TexturedRectangle::defaultVertices,
-                                      TexturedRectangle::defaultIndices,
-                                      tile
-                );
+                std::string fileName = "../assets/Map/tile";
+                int neighbours = 0;
+                if (gd->map[j-1][i] == WALL) neighbours += LEFT;
+                if (gd->map[j+1][i] == WALL) neighbours += RIGHT;
+                if (gd->map[j][i-1] == WALL) neighbours += UP;
+                if (gd->map[j][i+1] == WALL) neighbours += DOWN;
+
+                if (neighbours != 15) {
+                    fileName += std::to_string(neighbours) + ".png";
+
+                    new TexturedRectangle(this,
+                                          fileName,
+                                          TexturedRectangle::defaultVertices,
+                                          TexturedRectangle::defaultIndices,
+                                          tile
+                    );
+                }
+
             } else*/
             if (gd->map[j][i] == DOT) {
                 glm::mat4 dot = glm::mat4(1.0f);

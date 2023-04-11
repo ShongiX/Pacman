@@ -5,7 +5,7 @@
 #include "Blinky.hpp"
 
 Blinky::Blinky() : Ghost() {
-    this->x = 12;
+    this->x = 11.75;
     this->y = 17;
 
     this->direction = RIGHT;

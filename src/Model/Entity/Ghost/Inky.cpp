@@ -7,7 +7,7 @@
 #include "../Pacman/Pacman.hpp"
 
 Inky::Inky(Pacman *pacman, Blinky *blinky) {
-    this->x = 15;
+    this->x = 14;
     this->y = 17;
 
     this->pacman = pacman;

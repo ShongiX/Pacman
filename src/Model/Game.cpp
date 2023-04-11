@@ -106,26 +106,26 @@ bool Game::checkIfCanTurn(Direction direction) {
 
     float x = gd->pacman->getX();
     float y = gd->pacman->getY();
-    int r = (int) std::round(x);
-    int c = (int) std::round(y);
+    int roundedX = (int) std::round(x);
+    int roundedY = (int) std::round(y);
     if (direction == LEFT) {
-        if (gd->map[r][c] != WALL && gd->map[r - 1][c] != WALL &&
-            gd->map[r][c] != GHOST_ONLY && gd->map[r - 1][c] != GHOST_ONLY) {
+        if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX - 1][roundedY] != WALL &&
+            gd->map[roundedX][roundedY] != GHOST_ONLY && gd->map[roundedX - 1][roundedY] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == RIGHT) {
-        if (gd->map[r][c] != WALL && gd->map[r + 1][c] != WALL &&
-            gd->map[r][c] != GHOST_ONLY && gd->map[r + 1][c] != GHOST_ONLY) {
+        if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX + 1][roundedY] != WALL &&
+            gd->map[roundedX][roundedY] != GHOST_ONLY && gd->map[roundedX + 1][roundedY] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == UP) {
-        if (gd->map[r][c] != WALL && gd->map[r][c - 1] != WALL &&
-            gd->map[r][c] != GHOST_ONLY && gd->map[r][c - 1] != GHOST_ONLY) {
+        if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX][roundedY - 1] != WALL &&
+            gd->map[roundedX][roundedY] != GHOST_ONLY && gd->map[roundedX][roundedY - 1] != GHOST_ONLY) {
             return true;
         }
     } else if (direction == DOWN) {
-        if (gd->map[r][c] != WALL && gd->map[r][c + 1] != WALL &&
-            gd->map[r][c] != GHOST_ONLY && gd->map[r][c + 1] != GHOST_ONLY) {
+        if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX][roundedY + 1] != WALL &&
+            gd->map[roundedX][roundedY] != GHOST_ONLY && gd->map[roundedX][roundedY + 1] != GHOST_ONLY) {
             return true;
         }
     }
@@ -196,41 +196,41 @@ void Game::turnGhost(Ghost *ghost) {
 
     float x = ghost->getX();
     float y = ghost->getY();
-    int r = (int) std::round(x);
-    int c = (int) std::round(y);
+    int roundedX = (int) std::round(x);
+    int roundedY = (int) std::round(y);
 
     int neighbour = 0;
 
-    if (gd->map[r - 1][c] != WALL) {
+    if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX - 1][roundedY] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r - 1][c] != GHOST_ONLY) {
+            if (gd->map[roundedX - 1][roundedY] != GHOST_ONLY) {
                 neighbour += LEFT;
             }
         } else {
             neighbour += LEFT;
         }
     }
-    if (gd->map[r + 1][c] != WALL) {
+    if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX + 1][roundedY] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r + 1][c] != GHOST_ONLY) {
+            if (gd->map[roundedX + 1][roundedY] != GHOST_ONLY) {
                 neighbour += RIGHT;
             }
         } else {
             neighbour += RIGHT;
         }
     }
-    if (gd->map[r][c - 1] != WALL) {
+    if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX][roundedY - 1] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r][c - 1] != GHOST_ONLY) {
+            if (gd->map[roundedX][roundedY - 1] != GHOST_ONLY) {
                 neighbour += UP;
             }
         } else {
             neighbour += UP;
         }
     }
-    if (gd->map[r][c + 1] != WALL) {
+    if (gd->map[roundedX][roundedY] != WALL && gd->map[roundedX][roundedY + 1] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r][c + 1] != GHOST_ONLY) {
+            if (gd->map[roundedX][roundedY + 1] != GHOST_ONLY) {
                 neighbour += DOWN;
             }
         } else {
@@ -265,38 +265,38 @@ void Game::turnGhost(Ghost *ghost) {
 bool Game::checkIfCanMoveGhost(Ghost *ghost) {
     float x = ghost->getX();
     float y = ghost->getY();
-    int r = (int) std::round(x);
-    int c = (int) std::round(y);
+    int roundedX = (int) std::round(x);
+    int roundedY = (int) std::round(y);
 
-    if (r == 0 || r == -1 || r == 28 || r == 29) return true;
+    if (roundedX == 0 || roundedX == -1 || roundedX == 28 || roundedX == 29) return true;
 
-    if (ghost->getDirection() == LEFT && gd->map[r - 1][c] != WALL) {
+    if (ghost->getDirection() == LEFT && gd->map[roundedX - 1][roundedY] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r - 1][c] != GHOST_ONLY) {
+            if (gd->map[roundedX - 1][roundedY] != GHOST_ONLY) {
                 return true;
             }
             return false;
         }
         return true;
-    } else if (ghost->getDirection() == RIGHT && gd->map[r + 1][c] != WALL) {
+    } else if (ghost->getDirection() == RIGHT && gd->map[roundedX + 1][roundedY] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r + 1][c] != GHOST_ONLY) {
+            if (gd->map[roundedX + 1][roundedY] != GHOST_ONLY) {
                 return true;
             }
             return false;
         }
         return true;
-    } else if (ghost->getDirection() == UP && gd->map[r][c - 1] != WALL) {
+    } else if (ghost->getDirection() == UP && gd->map[roundedX][roundedY - 1] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r][c - 1] != GHOST_ONLY) {
+            if (gd->map[roundedX][roundedY - 1] != GHOST_ONLY) {
                 return true;
             }
             return false;
         }
         return true;
-    } else if (ghost->getDirection() == DOWN && gd->map[r][c + 1] != WALL) {
+    } else if (ghost->getDirection() == DOWN && gd->map[roundedX][roundedY + 1] != WALL) {
         if (ghost->getIsOutside()) {
-            if (gd->map[r][c + 1] != GHOST_ONLY) {
+            if (gd->map[roundedX][roundedY + 1] != GHOST_ONLY) {
                 return true;
             }
             return false;
@@ -309,8 +309,8 @@ bool Game::checkIfCanMoveGhost(Ghost *ghost) {
 
 void Game::moveGhost(Ghost *ghost) {
     if (!checkIfCanMoveGhost(ghost)) return;
-    if (ghost->getX() <= 0.3) ghost->setX(27.7);
-    else if (ghost->getX() >= 27.7) ghost->setX(0.3);
+    if (ghost->getX() <= 0) ghost->setX(26.7);
+    else if (ghost->getX() >= 27) ghost->setX(0.3);
 
     if (ghost->getDirection() == LEFT) {
         ghost->move(-MOVE_STEP, 0);
@@ -326,10 +326,10 @@ void Game::moveGhost(Ghost *ghost) {
 void Game::setIfOutside(Ghost *ghost) {
     float x = ghost->getX();
     float y = ghost->getY();
-    int r = (int) std::round(x);
-    int c = (int) std::round(y);
+    int roundedX = (int) std::round(x);
+    int roundedY = (int) std::round(y);
 
-    if (gd->map[r][c] != GHOST_ONLY) {
+    if (gd->map[roundedX][roundedY] != GHOST_ONLY) {
         ghost->setIsOutside(true);
     } else {
         ghost->setIsOutside(false);

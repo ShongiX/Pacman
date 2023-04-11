@@ -6,7 +6,7 @@
 #include "DynamicEntity.hpp"
 
 //The distance that must be travelled after turning again
-float DynamicEntity::COOLDOWN = 1.0;
+float DynamicEntity::COOLDOWN = 0.75;
 
 void DynamicEntity::move(float x, float y) {
     this->x += x;

@@ -6,7 +6,7 @@
 #include <cmath>
 
 Clyde::Clyde() {
-    this->x = 15;
+    this->x = 15.25;
     this->y = 17;
 
     this->direction = LEFT;
