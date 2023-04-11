@@ -36,12 +36,15 @@ protected:
         float y;
     } target{};
 
+    bool enabled = false;
     bool isOutside = false;
 
 public:
     Ghost();
     virtual void calculateTarget(float x, float y, bool chase) = 0;
     Direction calculatePath(int neighbour);
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
     void setIsOutside(bool isOutside);
     bool getIsOutside() const;
 };

@@ -24,14 +24,14 @@ std::vector<GLuint> TexturedRectangle::defaultIndices = {
         1, 2, 3    // second triangle
 };
 
-TexturedRectangle::TexturedRectangle(Menu* m, const char* fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans) {
+TexturedRectangle::TexturedRectangle(Menu* m, const std::string& fileName, const std::vector<GLfloat>& _vertices, const std::vector<GLuint>& _indices, glm::mat4 _trans) {
     this->m = m;
     m->addWidget(this);
     this->vertices = _vertices;
     this->indices = _indices;
     this->trans = _trans;
 
-    setupTexture(fileName);
+    setupTexture(fileName.c_str());
     setupBuffers();
     setupShader();
     setupTransform();

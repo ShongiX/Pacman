@@ -30,6 +30,7 @@ public:
     static void deleteDot(int j, int i);
 
     static void flip();
+    static void enableNext();
 };
 
 #endif //PACMAN_CONTROLLER_HPP

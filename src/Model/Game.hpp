@@ -35,6 +35,8 @@ public:
 
     bool checkIfWon();
     bool checkIfDead();
+
+    void enableNext();
 };
 
 

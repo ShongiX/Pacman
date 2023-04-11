@@ -23,11 +23,9 @@ protected:
 
 public:
     virtual void draw();
-
     virtual void handle(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     void addWidget(Widget *w);
-
     void removeWidget(Widget *w);
 };
 
@@ -40,19 +38,14 @@ public:
     GameMenu();
 
     void setInfo(GameData *_gd);
-
     void handle(GLFWwindow *window, int key, int scancode, int action, int mods) override;
 
     void build();
 
     void update();
-
     void updateTime();
-
     void updateChase();
-
     void updatePacman();
-
     void updateGhosts();
 
     void checkState();

@@ -89,7 +89,7 @@ void System::run() {
 
     double startTime = glfwGetTime(), lastTime = startTime, timer = lastTime;
     double deltaTime = 0, nowTime = 0;
-    int frames = 0 , updates = 0;
+    int frames = 0, updates = 0;
 
     while (!glfwWindowShouldClose(window)) {
         nowTime = glfwGetTime();
@@ -98,7 +98,7 @@ void System::run() {
 
         if (state == PLAY) {
 
-            if (deltaTime >= 1.0){
+            if (deltaTime >= 1.0) {
                 Controller::getInfo();
                 Controller::sendInfo();
 
@@ -117,8 +117,8 @@ void System::run() {
 
         ++frames;
         if (glfwGetTime() - timer > 1.0) {
-            timer ++;
-            //std::cout << "FPS: " << frames << " Updates:" << updates << "  " << timer << std::endl;
+            timer++;
+            //std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
             updates = 0, frames = 0;
         }
     }

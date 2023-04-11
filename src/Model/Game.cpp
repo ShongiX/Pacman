@@ -21,6 +21,8 @@ Game::Game() {
     gd->ghosts[2] = new Inky(gd->pacman, dynamic_cast<Blinky *>(gd->ghosts[0]));
     gd->ghosts[3] = new Clyde();
 
+    gd->ghosts[0]->setEnabled(true);
+
     //Read and load map info
     std::ifstream mapFile("../assets/pacman_map.txt");
     if (!mapFile.is_open()) {
@@ -62,9 +64,11 @@ void Game::updatePacman() {
 
 void Game::updateGhosts() {
     for (auto &ghost: gd->ghosts) {
-        setIfOutside(ghost);
-        turnGhost(ghost);
-        moveGhost(ghost);
+        if (ghost->isEnabled()) {
+            setIfOutside(ghost);
+            turnGhost(ghost);
+            moveGhost(ghost);
+        }
     }
 }
 
@@ -92,12 +96,13 @@ void Game::flip() {
 bool Game::checkIfCanTurn(Direction direction) {
     if (direction == gd->pacman->getDirection()) return false;
     if (gd->pacman->getCooldown() < DynamicEntity::COOLDOWN) return false;
-    if ((direction == LEFT && gd->pacman->getDirection() == RIGHT) ||
+    //Code if we want to restrict Pacman from 180 degree turns
+    /*if ((direction == LEFT && gd->pacman->getDirection() == RIGHT) ||
         (direction == RIGHT && gd->pacman->getDirection() == LEFT) ||
         (direction == UP && gd->pacman->getDirection() == DOWN) ||
         (direction == DOWN && gd->pacman->getDirection() == UP)) {
         return false;
-    }
+    }*/
 
     float x = gd->pacman->getX();
     float y = gd->pacman->getY();
@@ -167,10 +172,10 @@ void Game::move(DynamicEntity *entity) {
 
     if (entity->getDirection() == LEFT) {
         entity->move(-MOVE_STEP, 0);
-        if (entity->getX() < 0.0) entity->setX(28);
+        if (entity->getX() <= 0.0) entity->setX(28);
     } else if (entity->getDirection() == RIGHT) {
         entity->move(MOVE_STEP, 0);
-        if (entity->getX() > 28.0) entity->setX(0);
+        if (entity->getX() >= 28.0) entity->setX(0);
     } else if (entity->getDirection() == UP) {
         entity->move(0, -MOVE_STEP);
     } else if (entity->getDirection() == DOWN) {
@@ -235,6 +240,10 @@ void Game::turnGhost(Ghost *ghost) {
 
     ghost->calculateTarget(gd->pacman->getX(), gd->pacman->getY(), this->chase);
     Direction direction = ghost->calculatePath(neighbour);
+    if (direction == 0) {
+        //std::cout << "neighbour " << neighbour << "\n";
+        return;
+    }
 
     if ((direction == LEFT && ghost->getDirection() == RIGHT) ||
         (direction == RIGHT && ghost->getDirection() == LEFT) ||
@@ -258,6 +267,8 @@ bool Game::checkIfCanMoveGhost(Ghost *ghost) {
     float y = ghost->getY();
     int r = (int) std::round(x);
     int c = (int) std::round(y);
+
+    if (r == 0 || r == -1 || r == 28 || r == 29) return true;
 
     if (ghost->getDirection() == LEFT && gd->map[r - 1][c] != WALL) {
         if (ghost->getIsOutside()) {
@@ -298,13 +309,13 @@ bool Game::checkIfCanMoveGhost(Ghost *ghost) {
 
 void Game::moveGhost(Ghost *ghost) {
     if (!checkIfCanMoveGhost(ghost)) return;
+    if (ghost->getX() <= 0.3) ghost->setX(27.7);
+    else if (ghost->getX() >= 27.7) ghost->setX(0.3);
 
     if (ghost->getDirection() == LEFT) {
         ghost->move(-MOVE_STEP, 0);
-        if (ghost->getX() < -0.5) ghost->setX(28);
     } else if (ghost->getDirection() == RIGHT) {
         ghost->move(MOVE_STEP, 0);
-        if (ghost->getX() > 28.5) ghost->setX(0);
     } else if (ghost->getDirection() == UP) {
         ghost->move(0, -MOVE_STEP);
     } else if (ghost->getDirection() == DOWN) {
@@ -334,4 +345,11 @@ bool Game::checkIfDead() {
         if (Entity::checkCollision(gd->pacman, ghost)) return true;
     }
     return false;
+}
+
+void Game::enableNext() {
+    if (gd->enabled == GameData::NUMBER_OF_GHOSTS) return;
+
+    gd->ghosts[gd->enabled]->setEnabled(true);
+    gd->enabled++;
 }

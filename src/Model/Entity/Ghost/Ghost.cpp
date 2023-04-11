@@ -52,6 +52,14 @@ Direction Ghost::calculatePath(int neighbour) {
     return static_cast<Direction>(result);
 }
 
+bool Ghost::isEnabled() const {
+    return enabled;
+}
+
+void Ghost::setEnabled(bool enabled) {
+    Ghost::enabled = enabled;
+}
+
 void Ghost::setIsOutside(bool isOutside) {
     this->isOutside = isOutside;
 }

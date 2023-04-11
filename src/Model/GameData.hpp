@@ -24,8 +24,8 @@ private:
 
     bool gameOver = false;
     bool gameWon = false;
-    int score = 0;
     int numberOfDots = 246;
+    int enabled = 1; //number of enabled ghosts
 
     Pacman* pacman;
     Ghost* ghosts[4];

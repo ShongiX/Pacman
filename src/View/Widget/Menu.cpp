@@ -3,11 +3,10 @@
 //
 
 #include <algorithm>
-#include <cstring>
 #include "../../System.hpp"
 #include "Menu.hpp"
 #include "../../Controller/Controller.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 void Menu::draw() {
     for (Widget *widget: widgets) widget->draw();
@@ -25,9 +24,7 @@ void Menu::removeWidget(Widget *w) {
     widgets.erase(newEnd, widgets.end());
 }
 
-void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mods) {
-
-}
+void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mods) {}
 
 GameMenu::GameMenu() {
     lastTime = glfwGetTime();
@@ -46,8 +43,8 @@ GameMenu::GameMenu() {
             map_trans
     );
 
+    //pacman
     this->pacman_trans = glm::scale(this->pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
-
     this->pacman_anim[0] = new TexturedRectangle(
             this,
             "../assets/Entities/pacman_right_big.png",
@@ -55,7 +52,6 @@ GameMenu::GameMenu() {
             TexturedRectangle::defaultIndices,
             this->pacman_trans
     );
-
     this->pacman_anim[1] = new TexturedRectangle(
             this,
             "../assets/Entities/pacman_right.png",
@@ -63,7 +59,6 @@ GameMenu::GameMenu() {
             TexturedRectangle::defaultIndices,
             this->pacman_trans
     );
-
     this->pacman_anim[2] = new TexturedRectangle(
             this,
             "../assets/Entities/pacman_full.png",
@@ -72,36 +67,20 @@ GameMenu::GameMenu() {
             this->pacman_trans
     );
 
+    //ghosts
     for (auto &ghost_tran: this->ghost_trans) {
         ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
     }
-
     std::string dir[] = {"up", "right", "down", "left"};
     for (int i = 0; i < 4; ++i) {
-        std::string blinky1 = "../assets/Entities/blinky_";
-        std::string pinky1 = "../assets/Entities/pinky_";
-        std::string inky1 = "../assets/Entities/inky_";
-        std::string clyde1 = "../assets/Entities/clyde_";
-        std::string png = ".png";
-
-        std::string blinky = blinky1 + dir[i] + png;
-        std::string pinky = pinky1 + dir[i] + png;
-        std::string inky = inky1 + dir[i] + png;
-        std::string clyde = clyde1 + dir[i] + png;
-
-        char *final_blinky = new char[blinky.length() + 1];
-        char *final_pinky = new char[blinky.length() + 1];
-        char *final_inky = new char[blinky.length() + 1];
-        char *final_clyde = new char[blinky.length() + 1];
-
-        strcpy(final_blinky, blinky.c_str());
-        strcpy(final_pinky, pinky.c_str());
-        strcpy(final_inky, inky.c_str());
-        strcpy(final_clyde, clyde.c_str());
+        std::string blinky = "../assets/Entities/blinky_" + dir[i] + ".png";
+        std::string pinky = "../assets/Entities/pinky_" + dir[i] + ".png";
+        std::string inky = "../assets/Entities/inky_" + dir[i] + ".png";
+        std::string clyde = "../assets/Entities/clyde_" + dir[i] + ".png";
 
         this->ghosts[0][i] = new TexturedRectangle(
                 this,
-                final_blinky,
+                blinky,
                 TexturedRectangle::defaultVertices,
                 TexturedRectangle::defaultIndices,
                 ghost_trans[0]
@@ -109,7 +88,7 @@ GameMenu::GameMenu() {
 
         this->ghosts[1][i] = new TexturedRectangle(
                 this,
-                final_pinky,
+                pinky,
                 TexturedRectangle::defaultVertices,
                 TexturedRectangle::defaultIndices,
                 ghost_trans[1]
@@ -117,7 +96,7 @@ GameMenu::GameMenu() {
 
         this->ghosts[2][i] = new TexturedRectangle(
                 this,
-                final_inky,
+                inky,
                 TexturedRectangle::defaultVertices,
                 TexturedRectangle::defaultIndices,
                 ghost_trans[2]
@@ -125,16 +104,11 @@ GameMenu::GameMenu() {
 
         this->ghosts[3][i] = new TexturedRectangle(
                 this,
-                final_clyde,
+                clyde,
                 TexturedRectangle::defaultVertices,
                 TexturedRectangle::defaultIndices,
                 ghost_trans[3]
         );
-
-        delete[] final_blinky;
-        delete[] final_pinky;
-        delete[] final_inky;
-        delete[] final_clyde;
     }
 }
 
@@ -177,7 +151,13 @@ void GameMenu::updateTime() {
 }
 
 void GameMenu::updateChase() {
+    //If not all ghosts are enabled and 4 second passed since last ghost enabled, enable the next one
+    if (gd->enabled < GameData::NUMBER_OF_GHOSTS && deltaTime > 4.0 * gd->enabled) {
+        Controller::enableNext();
+    }
+
     //Scatter/Chase
+    //Every 12 seconds the ghost behaviour change, flips from chase to scatter and from scatter to chase
     if (deltaTime > 12.0) {
         Controller::flip();
         deltaTime = 0;
@@ -186,7 +166,9 @@ void GameMenu::updateChase() {
 
 void GameMenu::updatePacman() {
     pacman_trans = glm::mat4(1.0f);
-    pacman_trans = glm::translate(pacman_trans,glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,0.0f));
+    pacman_trans = glm::translate(pacman_trans,
+                                  glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,
+                                            0.0f));
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
@@ -199,12 +181,11 @@ void GameMenu::updatePacman() {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(270.0f), glm::vec3(0.0, 0.0, 1.0));
     }
 
-    //pacman->setTrans(pacman_trans);
     pacman_anim[0]->setTrans(pacman_trans);
     pacman_anim[1]->setTrans(pacman_trans);
     pacman_anim[2]->setTrans(pacman_trans);
 
-    int t = deltaTime * 10;
+    int t = (int) (deltaTime * 10);
     if (t % 4 == 0) {
         removeWidget(pacman_anim[0]);
         addWidget(pacman_anim[1]);
@@ -222,6 +203,11 @@ void GameMenu::updatePacman() {
 
 void GameMenu::updateGhosts() {
     for (int i = 0; i < GameData::NUMBER_OF_GHOSTS; ++i) {
+        //TEMPORARY
+        /*if (i == 0) {
+            std::cout << gd->ghosts[i]->getX() << " " << gd->ghosts[i]->getY() << " " << gd->ghosts[i]->getDirection() << "\n";
+        }*/
+
         ghost_trans[i] = glm::mat4(1.0f);
         ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f,
                                                                   (18.0f - gd->ghosts[i]->getY()) / 18.0f, 0.0f));
@@ -291,14 +277,12 @@ void GameMenu::build() {
         }
     }
 
+    //including the first frame from every animation
     widgets.push_back(ghosts[0][0]);
     widgets.push_back(ghosts[1][0]);
     widgets.push_back(ghosts[2][0]);
     widgets.push_back(ghosts[3][0]);
-    //widgets.push_back(pacman);
     widgets.push_back(pacman_anim[0]);
-    //widgets.push_back(pacman_anim[1]);
-    //widgets.push_back(pacman_anim[2]);
 }
 
 void GameMenu::removeDot(int j, int i) {

@@ -41,3 +41,7 @@ void Controller::deleteDot(int j, int i) {
 void Controller::flip() {
     game->flip();
 }
+
+void Controller::enableNext() {
+    game->enableNext();
+}
