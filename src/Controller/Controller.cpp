@@ -6,13 +6,13 @@
 #include "../Model/Game/Game.hpp"
 #include "../View/Widget/Menu.hpp"
 
-Game* Controller::game{};
-GameMenu* Controller::gameMenu{};
-GameData* Controller::gd{};
+Game *Controller::game{};
+GameMenu *Controller::gameMenu{};
+GameData *Controller::gd{};
 
 Controller::Controller() = default;
 
-void Controller::init(Game* _game, GameMenu* _gameMenu) {
+void Controller::init(Game *_game, GameMenu *_gameMenu) {
     Controller::game = _game;
     Controller::gameMenu = _gameMenu;
     Controller::gd = _game->getInfo();
@@ -35,7 +35,7 @@ void Controller::turn(Direction direction) {
 }
 
 void Controller::deleteDot(int j, int i) {
-    gameMenu->removeDot(j,i);
+    gameMenu->removeDot(j, i);
 }
 
 void Controller::flip() {

@@ -10,6 +10,11 @@
 class Pacman;
 class Blinky;
 
+/**
+ * Inky is the cyan ghost. Its target is mirrored from Blinky's position to Pacman's position (2 tiles ahead).
+ * If in scatter mode, it goes to the bottom right corner.
+ * If still in the spawn box, the target is just outside the box.
+ */
 class Inky : public Ghost {
 private:
     Pacman* pacman{};

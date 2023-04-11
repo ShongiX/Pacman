@@ -12,6 +12,10 @@
 class Game;
 class GameMenu;
 
+/**
+ * GameData contains all the data needed for the game to run, and is shared between Game and GameMenu.
+ * It is a friend of Game and GameMenu, so they can access its private members.
+ */
 class GameData {
 public:
     static const int MAP_WIDTH = 28;
@@ -20,16 +24,21 @@ public:
     static const int NUMBER_OF_GHOSTS = 4;
 
 private:
-    Tile map[MAP_WIDTH][MAP_HEIGHT];
+    //Logical map
+    Tile map[MAP_WIDTH][MAP_HEIGHT]{};
 
+    //Game state
     bool gameOver = false;
     bool gameWon = false;
-    int numberOfDots = 246;
-    int enabled = 1; //number of enabled ghosts
 
-    Pacman* pacman;
-    Ghost* ghosts[4];
-    //Blinky* blinky;
+    //Counted when loading the map
+    int numberOfDots = 0;
+
+    //Number of enabled ghosts
+    int enabled = 1;
+
+    Pacman* pacman{};
+    Ghost* ghosts[4]{};
 
     friend Game;
     friend GameMenu;

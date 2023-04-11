@@ -7,6 +7,9 @@
 
 #include "../Core/DynamicEntity.hpp"
 
+/**
+ * Pacman is the player. It can move in 4 directions and eat dots and ghosts.
+ */
 class Pacman : public DynamicEntity {
 public:
     Pacman();

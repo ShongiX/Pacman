@@ -8,6 +8,10 @@
 #include "../../Controller/Controller.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+Menu::~Menu() {
+    for (Widget *widget: widgets) delete widget;
+}
+
 void Menu::draw() {
     for (Widget *widget: widgets) widget->draw();
     widgets[widgets.size() - 1]->draw();
@@ -17,6 +21,7 @@ void Menu::addWidget(Widget *w) {
     this->widgets.push_back(w);
 }
 
+//This function removes the widget w from the widgets vector, meaning that it will not be rendered
 void Menu::removeWidget(Widget *w) {
     auto newEnd = std::remove_if(widgets.begin(), widgets.end(), [w](const Widget *widget) {
         return widget == w;
@@ -28,9 +33,8 @@ void Menu::handle(GLFWwindow *window, int key, int scancode, int action, int mod
 
 GameMenu::GameMenu() {
     lastTime = glfwGetTime();
-    nowTime = lastTime;
 
-    //map
+    //Setup transformation matrix for the map and add the map widget
     glm::mat4 map_trans = glm::mat4(1.0f);
     map_trans = glm::translate(map_trans, glm::vec3(0, -1 / 36.0, 0));
     map_trans = glm::scale(map_trans, glm::vec3(1, 31.0 / 36.0, 1));
@@ -43,7 +47,7 @@ GameMenu::GameMenu() {
             map_trans
     );
 
-    //pacman
+    //Setup transformation matrix for Pacman and add the Pacman widgets, since there are multiple to achieve an animation
     this->pacman_trans = glm::scale(this->pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
     this->pacman_anim[0] = new TexturedRectangle(
             this,
@@ -67,7 +71,7 @@ GameMenu::GameMenu() {
             this->pacman_trans
     );
 
-    //ghosts
+    //Setup transformation matrix for ghosts and add the Ghost widgets, since there are multiple to indicate the direction
     for (auto &ghost_tran: this->ghost_trans) {
         ghost_tran = glm::scale(ghost_tran, glm::vec3(1.5 / 28.0, 1.5 / 36.0, 1.0));
     }
@@ -117,6 +121,7 @@ void GameMenu::setInfo(GameData *_gd) {
 }
 
 void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    //The input is processed and passed to the controller to call the appropriate functions
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         if (Controller::askIfCanTurn(LEFT)) {
             Controller::turn(LEFT);
@@ -136,6 +141,7 @@ void GameMenu::handle(GLFWwindow *window, int key, int scancode, int action, int
     }
 }
 
+//The update is broken down in multiple functions to make it more readable
 void GameMenu::update() {
     updateTime();
     updateChase();
@@ -144,19 +150,22 @@ void GameMenu::update() {
     checkState();
 }
 
+//The passed time is calculated and used to update the chase/scatter behaviour and the ghost enabling
 void GameMenu::updateTime() {
     nowTime = glfwGetTime();
     deltaTime += (nowTime - lastTime);
     lastTime = nowTime;
 }
 
+//The chase/scatter behaviour is updated
 void GameMenu::updateChase() {
     //If not all ghosts are enabled and 3 second passed since last ghost enabled, enable the next one
+    //The ghosts are enabled in the following order: Blinky, Pinky, Inky, Clyde
     if (gd->enabled < GameData::NUMBER_OF_GHOSTS && deltaTime > 3.0 * gd->enabled) {
         Controller::enableNext();
     }
 
-    //Scatter/Chase
+    //Scatter/Chase behaviour
     //Every 12 seconds the ghost behaviour change, flips from chase to scatter and from scatter to chase
     if (deltaTime > 12.0) {
         Controller::flip();
@@ -165,6 +174,7 @@ void GameMenu::updateChase() {
 }
 
 void GameMenu::updatePacman() {
+    //The pacman transformation matrix is updated
     pacman_trans = glm::mat4(1.0f);
     pacman_trans = glm::translate(pacman_trans,
                                   glm::vec3((gd->pacman->getX() - 14.0f) / 14.0f, (18.0f - gd->pacman->getY()) / 18.0f,
@@ -172,7 +182,7 @@ void GameMenu::updatePacman() {
     pacman_trans = glm::translate(pacman_trans, glm::vec3(0.5 / 14.0, -0.5 / 18.0, 0.0));
     pacman_trans = glm::scale(pacman_trans, glm::vec3(1.0 / 28.0, 1.0 / 36.0, 1.0));
 
-
+    //The pacman is rotated according to the direction
     if (gd->pacman->getDirection() == LEFT) {
         pacman_trans = glm::rotate(pacman_trans, glm::radians(180.0f), glm::vec3(0.0, 0.0, 1.0));
     } else if (gd->pacman->getDirection() == UP) {
@@ -185,6 +195,7 @@ void GameMenu::updatePacman() {
     pacman_anim[1]->setTrans(pacman_trans);
     pacman_anim[2]->setTrans(pacman_trans);
 
+    //The pacman widget is updated to show the correct animation
     int t = (int) (deltaTime * 10);
     if (t % 4 == 0) {
         removeWidget(pacman_anim[0]);
@@ -201,12 +212,10 @@ void GameMenu::updatePacman() {
     }
 }
 
+//The ghosts are updated
 void GameMenu::updateGhosts() {
+    //The ghosts transformation matrix is updated
     for (int i = 0; i < GameData::NUMBER_OF_GHOSTS; ++i) {
-        //TEMPORARY
-        /*if (i == 0) {
-            std::cout << gd->ghosts[i]->getX() << " " << gd->ghosts[i]->getY() << " " << gd->ghosts[i]->getDirection() << "\n";
-        }*/
 
         ghost_trans[i] = glm::mat4(1.0f);
         ghost_trans[i] = glm::translate(ghost_trans[i], glm::vec3((gd->ghosts[i]->getX() - 14.0f) / 14.0f,
@@ -219,6 +228,7 @@ void GameMenu::updateGhosts() {
         ghosts[i][2]->setTrans(ghost_trans[i]);
         ghosts[i][3]->setTrans(ghost_trans[i]);
 
+        //The ghosts widget is updated to show the correct animation
         removeWidget(ghosts[i][0]);
         removeWidget(ghosts[i][1]);
         removeWidget(ghosts[i][2]);
@@ -232,6 +242,7 @@ void GameMenu::updateGhosts() {
     }
 }
 
+//The game state is checked
 void GameMenu::checkState() {
     if (gd->gameWon) {
         System::changeState(WIN);
@@ -241,13 +252,16 @@ void GameMenu::checkState() {
     }
 }
 
+//The necessary widgets are added to the game menu
 void GameMenu::build() {
     widgets.clear();
     widgets.push_back(map);
 
     for (int i = 0; i < GameData::MAP_HEIGHT; ++i) {
         for (int j = 0; j < GameData::MAP_WIDTH; ++j) {
-            //Code for custom maps
+            //Code for the option to import custom maps and draw them tile by tile
+            //Note: the selection of which tile to draw can be done by the same bitmasking used in the ghost targeting
+
             /*if (gd->map[j][i] == WALL) {
                 glm::mat4 tile = glm::mat4(1.0f);
                 tile = glm::translate(tile,glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f,0.0f));
@@ -273,6 +287,7 @@ void GameMenu::build() {
                 }
 
             } else*/
+            //Setting the dots
             if (gd->map[j][i] == DOT) {
                 glm::mat4 dot = glm::mat4(1.0f);
                 dot = glm::translate(dot, glm::vec3((j - 14.0f) / 14.0f, (18.0f - i) / 18.0f, 0.0f));
@@ -289,7 +304,7 @@ void GameMenu::build() {
         }
     }
 
-    //including the first frame from every animation
+    //Including the first frame from every animation
     widgets.push_back(ghosts[0][0]);
     widgets.push_back(ghosts[1][0]);
     widgets.push_back(ghosts[2][0]);

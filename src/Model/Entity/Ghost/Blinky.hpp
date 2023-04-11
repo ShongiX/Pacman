@@ -7,6 +7,11 @@
 
 #include "Ghost.hpp"
 
+/**
+ * Blinky is the red ghost. It chases the player directly, meaning its target is the player's position.
+ * If in scatter mode, it goes to the top right corner.
+ * If still in the spawn box, the target is just outside the box.
+ */
 class Blinky : public Ghost {
 
 public:

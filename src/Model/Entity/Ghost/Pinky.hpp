@@ -7,13 +7,18 @@
 
 #include "Ghost.hpp"
 
+/**
+ * Pinky is the pink ghost. Its target is 4 tiles in front of Pacman.
+ * If in scatter mode, it goes to the top left corner.
+ * If still in the spawn box, the target is just outside the box.
+ */
 class Pacman;
 
 class Pinky : public Ghost {
 private:
-    Pacman* pacman{};
+    Pacman *pacman{};
 public:
-    Pinky(Pacman* pacman);
+    explicit Pinky(Pacman *pacman);
 
     void calculateTarget(float x, float y, bool chase) override;
 };

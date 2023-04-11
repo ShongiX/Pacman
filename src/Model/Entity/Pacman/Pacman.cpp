@@ -5,6 +5,7 @@
 #include "Pacman.hpp"
 
 Pacman::Pacman() {
+    //Initial position and direction
     x = 13;
     y = 26;
     direction = LEFT;

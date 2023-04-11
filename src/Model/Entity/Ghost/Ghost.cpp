@@ -4,23 +4,24 @@
 
 #include "Ghost.hpp"
 #include <cmath>
-#include <iostream>
 
 Ghost::Ghost() : DynamicEntity() {}
 
 Direction Ghost::calculatePath(int neighbour) {
+    //The minimum distance is initialized to a very large number
     float minDist = 9999;
+
+    //The result is initialized to 0, meaning no direction
     int result = 0;
 
-    //std::cout << "Current direction: " << direction << "  Calc path: ";
-
+    //We check each direction, if the direction is free and it is not the opposite of the current direction, we calculate the distance to the target
+    //If the distance is smaller than the minimum distance, we update the minimum distance and the result
     if (neighbour & UP && direction != DOWN) {
         float dist = std::sqrt((x - target.x) * (x - target.x) + (y - 1 - target.y) * (y - 1 - target.y));
         if (dist < minDist) {
             minDist = dist;
             result = UP;
         }
-        //std::cout << "up: " << dist << ", ";
     }
     if (neighbour & RIGHT && direction != LEFT) {
         float dist = std::sqrt((x + 1 - target.x) * (x + 1 - target.x) + (y - target.y) * (y - target.y));
@@ -28,7 +29,6 @@ Direction Ghost::calculatePath(int neighbour) {
             minDist = dist;
             result = RIGHT;
         }
-        //std::cout << "right: " << dist << ", ";
     }
     if (neighbour & DOWN && direction != UP) {
         float dist = std::sqrt((x - target.x) * (x - target.x) + (y + 1 - target.y) * (y + 1 - target.y));
@@ -36,19 +36,15 @@ Direction Ghost::calculatePath(int neighbour) {
             minDist = dist;
             result = DOWN;
         }
-        //std::cout << "down: " << dist << ", ";
     }
     if (neighbour & LEFT && direction != RIGHT) {
         float dist = std::sqrt((x - 1 - target.x) * (x - 1 - target.x) + (y - target.y) * (y - target.y));
         if (dist < minDist) {
             result = LEFT;
         }
-        //std::cout << "left: " << dist << ", ";
     }
 
-    //std::cout << "choice: " << result << "\n";
-
-
+    //We return the result as a Direction
     return static_cast<Direction>(result);
 }
 
@@ -56,12 +52,12 @@ bool Ghost::isEnabled() const {
     return enabled;
 }
 
-void Ghost::setEnabled(bool enabled) {
-    Ghost::enabled = enabled;
+void Ghost::setEnabled(bool _enabled) {
+    Ghost::enabled = _enabled;
 }
 
-void Ghost::setIsOutside(bool isOutside) {
-    this->isOutside = isOutside;
+void Ghost::setIsOutside(bool _isOutside) {
+    this->isOutside = _isOutside;
 }
 
 bool Ghost::getIsOutside() const {

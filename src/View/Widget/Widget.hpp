@@ -10,6 +10,12 @@
 
 class Menu;
 
+/**
+ *  Widget is a base class for all the objects that can be drawn on the screen.
+ *  It has a pointer to the Menu object that it belongs to.
+ *  It's a pure virtual class, so it can't be instantiated.
+ *  It has a virtual destructor, so it can be safely deleted.
+ */
 class Widget {
 protected:
     Menu *m{};

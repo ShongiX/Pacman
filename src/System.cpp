@@ -20,6 +20,7 @@ std::map<State, Menu *> System::menus{};
 GameMenu *System::gameMenu{};
 State System::state = MAIN;
 
+//Callback functions
 static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -66,12 +67,13 @@ void System::initializeGlfw() {
     stbi_set_flip_vertically_on_load(true);
 }
 
+//Screen clearing function, used with black as default
 void System::clear(float r, float g, float b) {
     glClearColor(r, g, b, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-//initiliaze a new game
+//Initiliaze a new game
 void System::init() {
     gameMenu = dynamic_cast<GameMenu *>(buildGameMenu());
     menus[State::PLAY] = gameMenu;
@@ -82,11 +84,14 @@ void System::init() {
     gameMenu->build();
 }
 
+//Main loop
 void System::run() {
     activeMenu = menus[state];
 
+    // FPS limiter
     double limitFPS = 1.0 / 60.0;
 
+    // Time management
     double startTime = glfwGetTime(), lastTime = startTime, timer = lastTime;
     double deltaTime = 0, nowTime = 0;
     int frames = 0, updates = 0;
@@ -96,6 +101,7 @@ void System::run() {
         deltaTime += (nowTime - lastTime) / limitFPS;
         lastTime = nowTime;
 
+        // If in play state, update game
         if (state == PLAY) {
 
             if (deltaTime >= 1.0) {
@@ -110,6 +116,7 @@ void System::run() {
             }
         }
 
+        // Rendering
         clear();
         activeMenu->draw();
         glfwSwapBuffers(window);
@@ -118,7 +125,8 @@ void System::run() {
         ++frames;
         if (glfwGetTime() - timer > 1.0) {
             timer++;
-            std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+            //FPS counter and updates counter
+            //std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
             updates = 0, frames = 0;
         }
     }
@@ -191,7 +199,7 @@ Menu *System::buildWinMenu() {
 Menu *System::buildDeadMenu() {
     Menu *menu = new Menu();
 
-    //Dead text
+    // Dead text
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::scale(trans, glm::vec3(0.8, 0.3, 1));
     new TexturedRectangle(
@@ -206,17 +214,18 @@ Menu *System::buildDeadMenu() {
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    //Exit on escape
+    // Exit on escape
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
+    // Spacebar to start game or restart game
     if (System::getState() == MAIN) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            System::init(); //restart game
+            System::init(); // Restart game
             System::changeState(PLAY);
         }
-    } else if (System::getState() == PLAY) {
+    } else if (System::getState() == PLAY) { // If in play state, send key to controller
         System::handle(window, key, scancode, action, mods);
     } else if (System::getState() == WIN || System::getState() == DEAD) {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -225,6 +234,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 }
 
+// Mouse callback (not used)
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double xpos, ypos;
@@ -232,6 +242,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
     }
 }
 
+// Resize callback
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
     System::setScreenHeight(height);
@@ -239,6 +250,8 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 }
 
 System::~System() {
+    delete game;
+    delete gameMenu;
     glfwTerminate();
 }
 
